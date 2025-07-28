@@ -156,8 +156,10 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-white to-rose-50">
       {/* Announcement Bar */}
-      <div className="bg-gradient-to-r from-pink-600 to-rose-600 text-white py-2 text-center text-sm font-medium">
-        🔥 โปรโมชั่นพิเศษ! ลด 70% เฉพาะวันนี้เท่านั้น - เหลือเวลาอีก {timeLeft.hours}:{timeLeft.minutes.toString().padStart(2, '0')}:{timeLeft.seconds.toString().padStart(2, '0')}
+      <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white py-2 text-center text-sm font-medium">
+        🔥 โปรโมชั่นพิเศษ! ลด 70% เฉพาะวันนี้เท่านั้น - เหลือเวลาอีก <span className="bg-white text-red-600 px-2 py-1 rounded font-bold mx-1">
+          {timeLeft.hours.toString().padStart(2, '0')}:{timeLeft.minutes.toString().padStart(2, '0')}:{timeLeft.seconds.toString().padStart(2, '0')}
+        </span>
       </div>
 
       {/* Hero Section */}
@@ -622,12 +624,16 @@ export default function LandingPage() {
               อย่าให้โอกาสนี้ผ่านไป... เพราะ 6 เดือนข้างหน้า คุณจะขอบคุณตัวเองที่ตัดสินใจวันนี้
             </p>
 
-            <div className="bg-white bg-opacity-20 rounded-2xl p-8 mb-8">
-              <h3 className="text-2xl font-bold mb-4">⏰ โปรโมชั่นสิ้นสุดใน:</h3>
-              <div className="text-4xl font-bold">
-                {timeLeft.hours}:{timeLeft.minutes.toString().padStart(2, '0')}:{timeLeft.seconds.toString().padStart(2, '0')}
+            <div className="bg-gray-900 border-2 border-yellow-400 rounded-2xl p-8 mb-8 shadow-2xl">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400">⏰ โปรโมชั่นสิ้นสุดใน:</h3>
+              <div className="text-5xl font-bold text-white bg-red-600 rounded-lg px-6 py-4 inline-block shadow-lg">
+                <span className="tabular-nums">
+                  {timeLeft.hours.toString().padStart(2, '0')}:
+                  {timeLeft.minutes.toString().padStart(2, '0')}:
+                  {timeLeft.seconds.toString().padStart(2, '0')}
+                </span>
               </div>
-              <p className="mt-2 opacity-90">หลังจากนี้ราคากลับเป็น 29,990 บาท</p>
+              <p className="mt-4 text-yellow-100 text-lg">หลังจากนี้ราคากลับเป็น <span className="text-yellow-400 font-bold">29,990 บาท</span></p>
             </div>
 
             <motion.button
