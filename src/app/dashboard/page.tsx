@@ -211,7 +211,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">เป้าหมายถัดไป</h3>
-                    <p className="text-gray-600">Badge "{userStats.nextMilestone}"</p>
+                    <p className="text-gray-600">Badge &ldquo;{userStats.nextMilestone}&rdquo;</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -338,7 +338,7 @@ export default function Dashboard() {
                 
                 <div className="bg-white/50 rounded-lg p-3">
                   <p className="text-xs text-gray-700">
-                    "คุณช่วยให้แม่ท้องและแม่ใหม่ {userStats.communityImpact} คนรู้สึกมีกำลังใจมากขึ้น ❤️"
+                    &ldquo;คุณช่วยให้แม่ท้องและแม่ใหม่ {userStats.communityImpact} คนรู้สึกมีกำลังใจมากขึ้น ❤️&rdquo;
                   </p>
                 </div>
               </div>

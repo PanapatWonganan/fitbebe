@@ -214,7 +214,7 @@ export default function LessonCompletePage() {
                   ยินดีด้วยค่ะ! 
                 </h1>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                  คุณได้จบบทเรียน <span className="font-semibold text-pink-600">"{completionData.lessonTitle}"</span> 
+                  คุณได้จบบทเรียน <span className="font-semibold text-pink-600">&ldquo;{completionData.lessonTitle}&rdquo;</span> 
                   เรียบร้อยแล้ว สุดยอดเลยค่ะ! 💕
                 </p>
               </motion.div>
