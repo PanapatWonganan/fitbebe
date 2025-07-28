@@ -1,13 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Temporary disable static export for easier deployment
-  // output: 'export',
-  trailingSlash: true,
-  distDir: 'out',
+  // Standard Next.js config for Vercel deployment
+  reactStrictMode: true,
   images: {
-    unoptimized: true
-  }
+    domains: ['your-domain.com'], // Add your image domains here if needed
+  },
+  // Remove static export configs that cause issues with Vercel
+  // distDir: 'out',
+  // trailingSlash: true,
+  // swcMinify: true, // Removed - not needed in Next.js 15+
 };
 
 export default nextConfig;
