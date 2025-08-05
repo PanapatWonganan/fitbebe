@@ -8,7 +8,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
 
   const navItems = [
     { href: "/", label: "หน้าแรก" },
@@ -28,7 +28,7 @@ export function Header() {
               <Heart className="h-6 w-6 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent">
-              FitBebe
+              BoostMe
             </span>
           </Link>
 
@@ -52,13 +52,17 @@ export function Header() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-              aria-label="Toggle theme"
+              disabled={!mounted}
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-all duration-300 disabled:opacity-50"
+              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             >
-              {theme === 'light' ? (
-                <Moon className="h-5 w-5" />
+              {!mounted ? (
+                <div className="h-5 w-5 animate-pulse bg-gray-400 rounded" />
+              ) : theme === 'light' ? (
+                <Moon className="h-5 w-5 transition-transform duration-300" />
               ) : (
-                <Sun className="h-5 w-5" />
+                <Sun className="h-5 w-5 transition-transform duration-300" />
               )}
             </motion.button>
             

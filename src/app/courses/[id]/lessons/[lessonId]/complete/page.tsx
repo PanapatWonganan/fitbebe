@@ -150,11 +150,11 @@ export default function LessonCompletePage() {
   };
 
   const shareAchievement = () => {
-    const text = `🎉 เพิ่งจบบทเรียน "${completionData.lessonTitle}" ใน FitBebe! ได้ ${completionData.pointsEarned} คะแนน และ ${completionData.badgesEarned.length} badges ใหม่! 💕 #FitBebe #HealthyMom`;
+    const text = `🎉 เพิ่งจบบทเรียน "${completionData.lessonTitle}" ใน BoostMe! ได้ ${completionData.pointsEarned} คะแนน และ ${completionData.badgesEarned.length} badges ใหม่! 💕 #BoostMe #HealthyMom`;
     
     if (navigator.share) {
       navigator.share({
-        title: 'FitBebe Achievement',
+        title: 'BoostMe Achievement',
         text: text,
         url: window.location.origin
       });

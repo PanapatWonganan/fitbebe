@@ -24,8 +24,8 @@ export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState('week');
 
   const userStats = {
-    currentStage: 'Prenatal',
-    week: 24,
+    currentStage: 'Hormonal Balance',
+    week: 7,
     totalBadges: 12,
     currentStreak: 7,
     wellnessScore: 8.2,
@@ -61,7 +61,7 @@ export default function Dashboard() {
   ];
 
   const achievements = [
-    { text: 'เสร็จสิ้นบทเรียน Prenatal Yoga', time: '2 ชั่วโมงที่แล้ว', type: 'course' },
+    { text: 'เสร็จสิ้นบทเรียน Hormone Reset', time: '2 ชั่วโมงที่แล้ว', type: 'course' },
     { text: 'ได้ badge "Healthy Mama"', time: '1 วันที่แล้ว', type: 'badge' },
     { text: 'ให้กำลังใจสมาชิก 5 คน', time: '3 วันที่แล้ว', type: 'community' },
     { text: 'Wellness Score ถึง 8.0+', time: '5 วันที่แล้ว', type: 'milestone' }

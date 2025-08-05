@@ -86,22 +86,22 @@ export default function HealthAssessment() {
   const totalSteps = 4;
 
   const complications = [
-    'ไม่มีภาวะแทรกซ้อน',
+    'ไม่มีปัญหาฮอร์โมน',
+    'อาการ PMS รุนแรง',
+    'ประจำเดือนไม่สม่ำเสมอ',
+    'ประจำเดือนมาเยอะหรือน้อยผิดปกติ',
+    'ปัญหาต่อมไทรอยด์',
     'ความดันโลหิตสูง',
-    'เบาหวานขณะตั้งครรภ์',
-    'ประวัติแท้งบุตร',
-    'คลอดก่อนกำหนด',
-    'เลือดออกผิดปกติ',
-    'รกเลื่อน',
+    'เบาหวาน',
     'อื่นๆ'
   ];
 
   const medications = [
     'ไม่ได้ใช้ยาใดๆ',
-    'วิตามินสำหรับคุณแม่',
-    'ยาธาตุเหล็ก',
-    'ยาลดกรด',
-    'ยาต้านการแข็งตัวของเลือด',
+    'ยาคุมกำเนิด',
+    'ยาฮอร์โมนทดแทน',
+    'ยาต่อมไทรอยด์',
+    'ยาลดระดับน้ำตาล',
     'ยารักษาความดันโลหิตสูง',
     'อื่นๆ'
   ];
@@ -201,7 +201,7 @@ export default function HealthAssessment() {
     
     // Check for high-risk factors
     if (assessmentData.medicalHistory.complications.some(comp => 
-      ['ความดันโลหิตสูง', 'เบาหวานขณะตั้งครรภ์', 'ประวัติแท้งบุตร', 'คลอดก่อนกำหนด', 'เลือดออกผิดปกติ', 'รกเลื่อน'].includes(comp)
+      ['อาการ PMS รุนแรง', 'ประจำเดือนไม่สม่ำเสมอ', 'ปัญหาต่อมไทรอยด์', 'ความดันโลหิตสูง', 'เบาหวาน'].includes(comp)
     )) {
       riskFactors += 2;
     }
@@ -302,10 +302,10 @@ export default function HealthAssessment() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                ประเภทการตั้งครรภ์ *
+                สถานะสุขภาพฮอร์โมนปัจจุบัน *
               </label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {['ตั้งครรภ์ครั้งแรก', 'ตั้งครรภ์ซ้ำ', 'ตั้งครรภ์ฝาแฝด', 'ตั้งครรภ์เสี่ยงสูง'].map((type) => (
+                {['สุขภาพดี', 'มีอาการ PMS เล็กน้อย', 'มีปัญหาฮอร์โมนปานกลาง', 'มีปัญหาฮอร์โมนรุนแรง'].map((type) => (
                   <label key={type} className="flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-pink-50 transition-colors">
                     <input
                       type="radio"
@@ -342,10 +342,10 @@ export default function HealthAssessment() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                จำนวนครั้งที่เคยตั้งครรภ์ (รวมครั้งนี้) *
+                ความยาววงจรประจำเดือน (วัน) *
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {['1', '2', '3', '4+'].map((num) => (
+                {['21-24', '25-28', '29-32', '33+ หรือไม่สม่ำเสมอ'].map((num) => (
                   <label key={num} className="flex items-center justify-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-pink-50 transition-colors">
                     <input
                       type="radio"
@@ -355,7 +355,7 @@ export default function HealthAssessment() {
                       onChange={(e) => handleInputChange('medicalHistory', 'previousPregnancies', e.target.value)}
                       className="h-4 w-4 text-pink-600 focus:ring-pink-500 mr-2"
                     />
-                    <span className="text-gray-700">{num} ครั้ง</span>
+                    <span className="text-gray-700">{num} วัน</span>
                   </label>
                 ))}
               </div>
@@ -463,7 +463,7 @@ export default function HealthAssessment() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                ระดับกิจกรรมการออกกำลังกายก่อนตั้งครรภ์ *
+                ระดับกิจกรรมการออกกำลังกายปัจจุบัน *
               </label>
               <div className="space-y-3">
                 {[
@@ -538,7 +538,7 @@ export default function HealthAssessment() {
                     <div>
                       <p className="text-red-800 font-medium">ต้องได้รับอนุมัติจากแพทย์ก่อน</p>
                       <p className="text-red-700 text-sm mt-1">
-                        จากข้อมูลที่คุณให้มา เราแนะนำให้ปรึกษาแพทย์ผู้ดูแลการตั้งครรภ์ของคุณก่อนเริ่มออกกำลังกาย
+                        จากข้อมูลที่คุณให้มา เราแนะนำให้ปรึกษาแพทย์เฉพาะทางด้านฮอร์โมนของคุณก่อนเริ่มออกกำลังกาย
                       </p>
                     </div>
                   </div>
@@ -600,9 +600,9 @@ export default function HealthAssessment() {
                 <div className="ml-3 text-sm text-gray-700">
                   <span className="font-medium">ฉันรับทราบและยินยอม *</span>
                   <ul className="mt-2 space-y-1 text-xs text-gray-600">
-                    <li>• ฉันเข้าใจความเสี่ยงที่อาจเกิดขึ้นจากการออกกำลังกายระหว่างตั้งครรภ์</li>
+                    <li>• ฉันเข้าใจความเสี่ยงที่อาจเกิดขึ้นจากการออกกำลังกายเพื่อปรับสมดุลฮอร์โมน</li>
                     <li>• ฉันจะหยุดออกกำลังกายทันทีหากมีอาการผิดปกติ</li>
-                    <li>• ฉันจะปรึกษาแพทย์หากมีข้อสงสัยเกี่ยวกับสุขภาพ</li>
+                    <li>• ฉันจะปรึกษาแพทย์หากมีข้อสงสัยเกี่ยวกับสุขภาพฮอร์โมน</li>
                     <li>• ข้อมูลที่ให้มาเป็นความจริงและถูกต้อง</li>
                   </ul>
                 </div>

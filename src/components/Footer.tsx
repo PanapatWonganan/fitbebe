@@ -12,7 +12,7 @@ export function Footer() {
               <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-2 rounded-xl">
                 <Heart className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold">FitBebe</span>
+              <span className="text-xl font-bold">BoostMe</span>
             </div>
                           <p className="text-gray-400 text-sm">
                 แพลตฟอร์มสุขภาพผู้หญิงออนไลน์ ดูแลคุณตั้งแต่ก่อนตั้งครรภ์ หลังคลอด และสมดุลฮอร์โมน เพื่อสาวๆ ทุกคน
@@ -90,7 +90,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center space-x-2 text-sm text-gray-400">
                 <Mail className="h-4 w-4" />
-                <span>info@fitbebe.com</span>
+                <span>info@boostme.com</span>
               </li>
               <li className="flex items-center space-x-2 text-sm text-gray-400">
                 <Phone className="h-4 w-4" />
@@ -106,7 +106,7 @@ export function Footer() {
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} FitBebe. สงวนลิขสิทธิ์ทุกประการ - เพื่อสาวๆ ทุกคน
+            © {new Date().getFullYear()} BoostMe. สงวนลิขสิทธิ์ทุกประการ - เพื่อสาวๆ ทุกคน
           </p>
         </div>
       </div>

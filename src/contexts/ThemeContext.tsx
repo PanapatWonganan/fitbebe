@@ -8,6 +8,7 @@ interface ThemeContextType {
   theme: Theme;
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
+  mounted: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -18,41 +19,61 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Load theme from localStorage on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('fitbebe-theme') as Theme;
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    
-    setTheme(savedTheme || systemTheme);
-    setMounted(true);
+    try {
+      const savedTheme = localStorage.getItem('boostme-theme') as Theme;
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      
+      const initialTheme = savedTheme || systemTheme;
+      setTheme(initialTheme);
+      setMounted(true);
+    } catch (error) {
+      console.warn('Error loading theme:', error);
+      setTheme('light');
+      setMounted(true);
+    }
   }, []);
 
-  // Update document class and localStorage when theme changes
+  // Apply theme to document when theme changes
   useEffect(() => {
     if (mounted) {
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(theme);
-      localStorage.setItem('fitbebe-theme', theme);
-      
-      // Update meta theme-color for mobile browsers
-      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-      if (metaThemeColor) {
-        metaThemeColor.setAttribute('content', theme === 'dark' ? '#1f2937' : '#ec4899');
+      try {
+        // Update html element classes
+        document.documentElement.className = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // Save to localStorage
+        localStorage.setItem('boostme-theme', theme);
+        
+        // Update meta theme-color for mobile browsers
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+          metaThemeColor.setAttribute('content', theme === 'dark' ? '#1f2937' : '#ec4899');
+        }
+      } catch (error) {
+        console.warn('Error applying theme:', error);
       }
     }
   }, [theme, mounted]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
   };
 
   const contextValue: ThemeContextType = {
     theme,
     toggleTheme,
     setTheme,
+    mounted,
   };
 
-  // Prevent flash of unstyled content
+  // Prevent flash of unstyled content during hydration
   if (!mounted) {
-    return <div style={{ visibility: 'hidden' }}>{children}</div>;
+    return (
+      <div className="min-h-screen bg-white">
+        {children}
+      </div>
+    );
   }
 
   return (
@@ -65,11 +86,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    // Return default values during SSR/pre-rendering
+    // Return safe defaults during SSR/pre-rendering
     return {
       theme: 'light' as Theme,
-      toggleTheme: () => {},
-      setTheme: () => {},
+      toggleTheme: () => {
+        console.warn('useTheme called outside of ThemeProvider');
+      },
+      setTheme: () => {
+        console.warn('useTheme called outside of ThemeProvider');
+      },
+      mounted: false,
     };
   }
   return context;

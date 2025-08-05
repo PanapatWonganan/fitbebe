@@ -51,9 +51,9 @@ export default function Contact() {
     {
       icon: Mail,
       title: "อีเมล",
-      value: "info@fitbebe.com",
+      value: "info@boostme.com",
       description: "ตอบกลับภายใน 24 ชั่วโมง",
-      action: "mailto:info@fitbebe.com"
+      action: "mailto:info@boostme.com"
     },
     {
       icon: Phone,
@@ -81,8 +81,8 @@ export default function Contact() {
   const supportCategories = [
     {
       icon: Baby,
-      title: "คำปรึกษาด้านการตั้งครรภ์",
-      description: "แนะนำการออกกำลังกายที่ปลอดภัยระหว่างตั้งครรภ์",
+      title: "คำปรึกษาการเตรียมความพร้อม",
+      description: "แนะนำการออกกำลังกายเพื่อเตรียมร่างกายก่อนตั้งครรภ์",
       available: "ทุกวัน 8:00-20:00"
     },
     {
@@ -117,7 +117,7 @@ export default function Contact() {
     {
       category: "ความปลอดภัย",
       questions: [
-        "โปรแกรมปลอดภัยสำหรับหญิงตั้งครรภ์ไหม?",
+        "โปรแกรมปลอดภัยสำหรับผู้หญิงทุกวัยหรือไม่?",
         "มีแพทย์ให้คำปรึกษาหรือไม่?",
         "ถ้ามีปัญหาสุขภาพควรทำอย่างไร?"
       ]
@@ -161,7 +161,7 @@ export default function Contact() {
             
             <p className="text-xl text-pink-100 max-w-3xl mx-auto leading-relaxed">
               ทีมผู้เชี่ยวชาญของเราพร้อมให้คำปรึกษาและดูแลคุณในทุกช่วงชีวิต 
-              ไม่ว่าจะเป็นก่อนตั้งครรภ์ ระหว่างตั้งครรภ์ หรือหลังคลอด
+              ไม่ว่าจะเป็นก่อนตั้งครรภ์ หลังคลอด หรือปัญหาฮอร์โมน
             </p>
             
             <div className="flex items-center justify-center space-x-8 mt-8 text-pink-100">
@@ -302,7 +302,7 @@ export default function Contact() {
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-colors"
                   >
                     <option value="">เลือกประเภท</option>
-                    <option value="prenatal">คำปรึกษาด้านการตั้งครรภ์</option>
+                    <option value="prepregnancy">การเตรียมความพร้อมก่อนตั้งครรภ์</option>
                     <option value="postnatal">การฟื้นฟูหลังคลอด</option>
                     <option value="hormone">สมดุลฮอร์โมน</option>
                     <option value="community">ชุมชนและการสนับสนุน</option>
@@ -577,7 +577,7 @@ export default function Contact() {
             </h2>
             
             <p className="text-xl text-pink-100 mb-8">
-              หากคุณมีอาการผิดปกติหรือภาวะฉุกเฉินที่เกี่ยวข้องกับการตั้งครรภ์หรือหลังคลอด
+              หากคุณมีอาการผิดปกติหรือภาวะฉุกเฉินที่เกี่ยวข้องกับสุขภาพผู้หญิง
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -593,7 +593,7 @@ export default function Contact() {
                 className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-pink-500 transition-colors duration-300 flex items-center justify-center space-x-2"
               >
                 <HeadphonesIcon className="h-5 w-5" />
-                <span>สายด่วน FitBebe</span>
+                <span>สายด่วน BoostMe</span>
               </a>
             </div>
           </motion.div>

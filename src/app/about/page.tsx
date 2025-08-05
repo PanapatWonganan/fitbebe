@@ -29,7 +29,7 @@ export default function About() {
       icon: Shield,
       title: "Safety First",
       subtitle: "ความปลอดภัยเป็นอันดับหนึ่ง",
-      description: "ทุกโปรแกรมผ่านการรับรองจากแพทย์ผู้เชี่ยวชาญ ปลอดภัยสำหรับผู้หญิงทุกช่วงชีวิต โดยเฉพาะระหว่างตั้งครรภ์และหลังคลอด"
+      description: "ทุกโปรแกรมผ่านการรับรองจากแพทย์ผู้เชี่ยวชาญ ปลอดภัยสำหรับผู้หญิงทุกช่วงชีวิต โดยเฉพาะก่อนตั้งครรภ์และหลังคลอด"
     },
     {
       icon: Users,
@@ -48,7 +48,7 @@ export default function About() {
   const milestones = [
     {
       year: "2023",
-      title: "ก่อตั้ง FitBebe",
+      title: "ก่อตั้ง BoostMe",
       description: "เริ่มต้นด้วยความฝันที่จะดูแลสุขภาพผู้หญิงไทยให้ดีขึ้น"
     },
     {
@@ -117,7 +117,7 @@ export default function About() {
           >
             <div className="flex items-center justify-center space-x-2 text-pink-100 mb-6">
               <Heart className="h-8 w-8" />
-              <span className="text-2xl font-semibold">FitBebe</span>
+              <span className="text-2xl font-semibold">BoostMe</span>
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
@@ -128,7 +128,7 @@ export default function About() {
             
             <p className="text-xl text-pink-100 max-w-3xl mx-auto leading-relaxed">
               เราเป็นแพลตฟอร์มสุขภาพผู้หญิงออนไลน์ที่เข้าใจและดูแลคุณตั้งแต่ก่อนตั้งครรภ์ 
-              ระหว่างตั้งครรภ์ หลังคลอด และการสมดุลฮอร์โมน ด้วยโปรแกรมที่ปลอดภัยและมีหลักฐานทางวิทยาศาสตร์
+              หลังคลอด และการสมดุลฮอร์โมน ด้วยโปรแกรมที่ปลอดภัยและมีหลักฐานทางวิทยาศาสตร์
             </p>
           </motion.div>
         </div>
@@ -183,14 +183,14 @@ export default function About() {
                   <Baby className="h-10 w-10 text-pink-600" />
                 </div>
                 
-                <h3 className="text-2xl font-bold text-gray-900">ทำไมเราถึงเริ่ม FitBebe?</h3>
+                <h3 className="text-2xl font-bold text-gray-900">ทำไมเราถึงเริ่ม BoostMe?</h3>
                 
                 <div className="space-y-4 text-gray-600">
                   <p>
                     &ldquo;เราเห็นว่าผู้หญิงไทยมักขาดข้อมูลที่ถูกต้องเกี่ยวกับการดูแลตัวเองในแต่ละช่วงชีวิต&rdquo;
                   </p>
                   <p>
-                    &ldquo;โดยเฉพาะในช่วงตั้งครรภ์และหลังคลอด ที่มักจะได้รับคำแนะนำที่ไม่มีหลักฐานทางวิทยาศาสตร์&rdquo;
+                    &ldquo;โดยเฉพาะหลังคลอด ที่มักจะได้รับคำแนะนำที่ไม่มีหลักฐานทางวิทยาศาสตร์&rdquo;
                   </p>
                   <p>
                     &ldquo;เราจึงรวมตัวกันเพื่อสร้างพื้นที่ปลอดภัยที่ผู้หญิงทุกคนสามารถเรียนรู้และดูแลตัวเองได้อย่างถูกต้อง&rdquo;
@@ -198,7 +198,7 @@ export default function About() {
                 </div>
                 
                 <div className="text-pink-600 font-semibold">
-                  - ทีมก่อตั้ง FitBebe
+                  - ทีมก่อตั้ง BoostMe
                 </div>
               </div>
             </motion.div>
@@ -390,7 +390,7 @@ export default function About() {
             </h2>
             
             <p className="text-xl text-gray-600 mb-8">
-              เข้าร่วมกับคุณแม่และผู้หญิงมากกว่า 8,000 คนที่เลือกดูแลตัวเองกับ FitBebe
+              เข้าร่วมกับคุณแม่และผู้หญิงมากกว่า 8,000 คนที่เลือกดูแลตัวเองกับ BoostMe
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

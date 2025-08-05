@@ -1,4 +1,4 @@
-# 🌸 FitBebe - Women's Health Learning Platform
+# 🌸 BoostMe - Women's Health Learning Platform
 
 > **แพลตฟอร์มสุขภาพผู้หญิงออนไลน์ ดูแลคุณตั้งแต่ก่อนตั้งครรภ์ หลังคลอด และสมดุลฮอร์โมน เพื่อสาวๆ ทุกคน**
 
@@ -43,8 +43,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/PanapatWonganan/fitbebe.git
-cd fitbebe
+git clone https://github.com/PanapatWonganan/boostme.git
+cd boostme
 
 # Install dependencies
 npm install
@@ -205,6 +205,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **🌸 Made with ❤️ for women's health and wellness**
 
-[Live Demo](https://fitbebe.vercel.app) • [Documentation](https://github.com/PanapatWonganan/fitbebe/wiki) • [Report Bug](https://github.com/PanapatWonganan/fitbebe/issues)
+[Live Demo](https://boostme.vercel.app) • [Documentation](https://github.com/PanapatWonganan/boostme/wiki) • [Report Bug](https://github.com/PanapatWonganan/boostme/issues)
 
 </div>

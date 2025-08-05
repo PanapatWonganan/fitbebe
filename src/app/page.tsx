@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Users, Star, Clock, CheckCircle, ArrowRight, Play, Heart } from 'lucide-react';
+import { Sparkles, Users, Star, Clock, CheckCircle, ArrowRight, Play, Heart, Dumbbell, Leaf, Utensils, Baby } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -10,66 +10,58 @@ export default function Home() {
   const featuredCourses = [
     {
       id: 1,
-      title: "Prenatal Fitness: โยคะและออกกำลังกายคุณแม่",
-      instructor: "ดร.สุดา เวชกรรมคลอด",
-      duration: "9 เดือน",
-      students: 1850,
+      title: "Fertile Fit คอร์สบำรุงมดลูก เตรียมพร้อมสู่ความเป็นแม่",
+      subtitle: "Pre-Pregnancy Fertility & Womb Care",
+      instructor: "Bebe X ทีมผู้เชี่ยวชาญ",
+      duration: "8 สัปดาห์",
+      students: 1250,
       rating: 4.9,
-      price: 3990,
-      originalPrice: 5990,
-      image: "/course-prenatal.jpg",
-      category: "Prenatal",
-      lifecycle: "prenatal",
-      description: "โปรแกรมออกกำลังกายที่ปลอดภัยสำหรับคุณแม่ตั้งครรภ์ เน้นความแข็งแรงและเตรียมความพร้อมสำหรับการคลอด"
+      price: 4990,
+      originalPrice: 6990,
+      image: "/course-fertile-fit.jpg",
+      category: "Exercise X Bebe",
+      lifecycle: "pre-pregnancy",
+      description: "เพิ่มโอกาสในการตั้งครรภ์ ด้วยการปรับสมดุลมดลูก, ฮอร์โมน และจิตใจให้พร้อม",
+      bonus: "🎁 แถมฟรี: E-book Relaxation & Nutrition เบื้องต้น"
     },
     {
       id: 2,
-      title: "Postnatal Recovery: ฟื้นฟูร่างกายหลังคลอด",
-      instructor: "ครูแอน ฟิตแม่",
+      title: "Mommy Reboot คอร์สกู้ร่างมนุษย์แม่",
+      subtitle: "Postpartum Fitness & Emotional Recovery",
+      instructor: "Bebe X ทีมผู้เชี่ยวชาญ",
       duration: "12 สัปดาห์",
-      students: 2100,
+      students: 2380,
       rating: 4.8,
-      price: 2990,
-      originalPrice: 4490,
-      image: "/course-postnatal.jpg",
-      category: "Postnatal", 
-      lifecycle: "postnatal",
-      description: "โปรแกรมฟื้นฟูร่างกายอย่างปลอดภัยหลังคลอด ลดน้ำหนัก เสริมสร้างแกนกาย และดูแลสุขภาพจิต"
+      price: 5990,
+      originalPrice: 8990,
+      image: "/course-mommy-reboot.jpg",
+      category: "Exercise X Bebe", 
+      lifecycle: "postpartum",
+      description: "ฟื้นฟูร่างกายและจิตใจหลังคลอด ทั้งพุง หน้าท้อง กล้ามเนื้อ และใจที่อ่อนล้า",
+      bonus: "🎁 แถมฟรี: E-book Relaxation & Nutrition เบื้องต้น"
     },
     {
       id: 3,
-      title: "Hormonal Balance: สมดุลฮอร์โมนเพื่อสุขภาพดี",
-      instructor: "ดร.นิรมล ฮอร์โมนคลินิก",
-      duration: "8 สัปดาห์",
-      students: 1675,
+      title: "Hormone Reset คอร์สออกกำลังปรับฮอร์โมน",
+      subtitle: "Hormonal Balance Fit",
+      instructor: "Bebe X ทีมผู้เชี่ยวชาญ",
+      duration: "10 สัปดาห์",
+      students: 1890,
       rating: 4.9,
-      price: 3490,
-      originalPrice: 4990,
-      image: "/course-hormonal.jpg",
-      category: "Hormonal Balance",
+      price: 4490,
+      originalPrice: 6490,
+      image: "/course-hormone-reset.jpg",
+      category: "Exercise X Bebe",
       lifecycle: "hormonal", 
-      description: "โปรแกรมครบครันเพื่อสมดุลฮอร์โมน ผ่านการออกกำลังกาย โภชนาการ และการจัดการความเครียด"
-    },
-    {
-      id: 4,
-      title: "Women's Wellness Journey: ดูแลตัวเองทุกช่วงชีวิต",
-      instructor: "ทีม FitLearn Women's Health",
-      duration: "ตลอดชีพ",
-      students: 3200,
-      rating: 5.0,
-      price: 1990,
-      originalPrice: 2990,
-      image: "/course-wellness-journey.jpg",
-      category: "Comprehensive",
-      lifecycle: "all",
-      description: "แพลทฟอร์มครบครันสำหรับผู้หญิงทุกช่วงวัย ตั้งแต่วัยรุ่น ตั้งครรภ์ หลังคลอด จนถึงวัยทอง"
+      description: "รีเซ็ตระบบฮอร์โมน ลดอาการ PMS, ปวดประจำเดือน, เครียด, นอนไม่หลับ, น้ำหนักขึ้นง่าย",
+      bonus: "🎁 แถมฟรี: E-book Relaxation & Nutrition เบื้องต้น"
     }
   ];
 
   const benefits = [
-    "🤰 Prenatal Care: การดูแลที่ปลอดภัยระหว่างตั้งครรภ์",
     "👶 Postnatal Recovery: โปรแกรมฟื้นฟูหลังคลอดอย่างมีประสิทธิภาพ",
     "⚖️ Hormonal Balance: สมดุลฮอร์โมนด้วยวิธีธรรมชาติ", 
+    "💪 Pre-Pregnancy Fitness: เตรียมร่างกายและจิตใจก่อนตั้งครรภ์",
     "👩‍⚕️ Expert Guidance: คำปรึกษาจากผู้เชี่ยวชาญด้านสุขภาพผู้หญิง",
     "✅ เรียนที่บ้านได้ตลอด 24/7 เหมาะกับไลฟ์สไตล์แม่บ้าน",
     "🎯 ปลอดภัย 100% ผ่านการรับรองจากแพทย์ผู้เชี่ยวชาญ"
@@ -106,7 +98,7 @@ export default function Home() {
               </h1>
               
               <p className="text-xl text-pink-100 leading-relaxed">
-                ดูแลสุขภาพผู้หญิงตั้งแต่ก่อนตั้งครรภ์ ระหว่างตั้งครรภ์ หลังคลอด 
+                ดูแลสุขภาพผู้หญิงตั้งแต่ก่อนตั้งครรภ์ หลังคลอด 
                 และสมดุลฮอร์โมนด้วยโปรแกรมที่ปลอดภัย
               </p>
               
@@ -195,14 +187,14 @@ export default function Home() {
                 {/* Content Section with Enhanced Styling */}
                 <div className="mt-6 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-semibold text-white">โปรแกรมแนะนำ: Prenatal Yoga</h3>
+                    <h3 className="text-xl font-semibold text-white">โปรแกรมแนะนำ: Hormone Reset</h3>
                     <div className="flex items-center space-x-1 bg-yellow-300/20 px-2 py-1 rounded-full">
                       <Star className="h-4 w-4 text-yellow-300 fill-current" />
-                      <span className="text-yellow-300 text-sm font-medium">4.9</span>
+                      <span className="text-yellow-300 text-sm font-medium">4.8</span>
                     </div>
                   </div>
                   <p className="text-pink-100 leading-relaxed">
-                    ปลอดภัยและมั่นใจตั้งแต่วันแรกของการตั้งครรภ์
+                    รีเซ็ตระบบฮอร์โมน ลดอาการ PMS และปรับสมดุลร่างกาย
                   </p>
                   
                   {/* Progress Bar */}
@@ -253,15 +245,15 @@ export default function Home() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              4 มิติการดูแลเฉพาะผู้หญิง
+              5 มิติการดูแลเฉพาะผู้หญิง
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               เข้าใจผู้หญิงอย่างลึกซึ้ง ดูแลสุขภาพแบบองค์รวมตามธรรมชาติของร่างกายและจิตใจ
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Reproductive Health Pillar */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            {/* Exercise X Bebe Pillar */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -269,16 +261,22 @@ export default function Home() {
               className="text-center group hover:scale-105 transition-transform duration-300"
             >
               <div className="bg-gradient-to-br from-pink-100 to-rose-100 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:from-pink-200 group-hover:to-rose-200 transition-colors">
-                <Heart className="h-10 w-10 text-pink-600" />
+                <Dumbbell className="h-10 w-10 text-pink-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Reproductive Health</h3>
-              <h4 className="text-lg font-medium text-pink-600 mb-2">สุขภาพสืบพันธุ์</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                ดูแลสุขภาพสืบพันธุ์ตั้งแต่เตรียมตัวตั้งครรภ์ ระหว่างตั้งครรภ์ และหลังคลอด
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Exercise X Bebe</h3>
+              <h4 className="text-lg font-medium text-pink-600 mb-2">การออกกำลังกาย</h4>
+              <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                โปรแกรมออกกำลังกายเฉพาะผู้หญิง มี 3 คอร์สหลัก:
               </p>
+              <div className="text-xs text-gray-500 space-y-1">
+                <div>• Fertile Fit - บำรุงมดลูก</div>
+                <div>• Mommy Reboot - ฟื้นฟูหลังคลอด</div>
+                <div>• Hormone Reset - ปรับฮอร์โมน</div>
+                <div className="text-yellow-600 font-medium mt-2">🎁 แถม e-book ฟรี!</div>
+              </div>
             </motion.div>
 
-            {/* Hormonal Balance Pillar */}
+            {/* Relaxation X Dr.XX Pillar */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -286,16 +284,16 @@ export default function Home() {
               className="text-center group hover:scale-105 transition-transform duration-300"
             >
               <div className="bg-gradient-to-br from-pink-100 to-rose-100 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:from-pink-200 group-hover:to-rose-200 transition-colors">
-                <Sparkles className="h-10 w-10 text-pink-600" />
+                <Leaf className="h-10 w-10 text-pink-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Hormonal Balance</h3>
-              <h4 className="text-lg font-medium text-pink-600 mb-2">สมดุลฮอร์โมน</h4>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Relaxation X Dr.XX</h3>
+              <h4 className="text-lg font-medium text-pink-600 mb-2">การผ่อนคลาย</h4>
               <p className="text-gray-600 text-sm leading-relaxed">
-                จัดการสมดุลฮอร์โมนผ่านการออกกำลังกาย โภชนาการ และการจัดการความเครียด
+                เทคนิคการผ่อนคลายและจัดการความเครียดโดยแพทย์เฉพาะทาง เพื่อสุขภาพจิตที่ดี
               </p>
             </motion.div>
 
-            {/* Mental Wellness Pillar */}
+            {/* Nutrition X Dr.XX Pillar */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -303,16 +301,16 @@ export default function Home() {
               className="text-center group hover:scale-105 transition-transform duration-300"
             >
               <div className="bg-gradient-to-br from-pink-100 to-rose-100 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:from-pink-200 group-hover:to-rose-200 transition-colors">
-                <Star className="h-10 w-10 text-pink-600" />
+                <Utensils className="h-10 w-10 text-pink-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Mental Wellness</h3>
-              <h4 className="text-lg font-medium text-pink-600 mb-2">สุขภาพจิต</h4>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Nutrition X Dr.XX</h3>
+              <h4 className="text-lg font-medium text-pink-600 mb-2">โภชนาการ</h4>
               <p className="text-gray-600 text-sm leading-relaxed">
-                ดูแลสุขภาพจิตเฉพาะผู้หญิง รับมือกับความเครียด วิตกกังวล และการเปลี่ยนแปลงทางอารมณ์
+                แผนโภชนาการเฉพาะผู้หญิงโดยแพทย์เฉพาะทาง เพื่อสุขภาพที่สมบูรณ์แบบ
               </p>
             </motion.div>
 
-            {/* Women's Community Pillar */}
+            {/* Community Pillar */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -322,10 +320,27 @@ export default function Home() {
               <div className="bg-gradient-to-br from-pink-100 to-rose-100 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:from-pink-200 group-hover:to-rose-200 transition-colors">
                 <Users className="h-10 w-10 text-pink-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Women&apos;s Community</h3>
-              <h4 className="text-lg font-medium text-pink-600 mb-2">ชุมชนผู้หญิง</h4>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Community</h3>
+              <h4 className="text-lg font-medium text-pink-600 mb-2">ชุมชน</h4>
               <p className="text-gray-600 text-sm leading-relaxed">
-                ชุมชนผู้หญิงที่เข้าใจกัน แชร์ประสบการณ์การเป็นแม่ การดูแลตัวเอง และให้กำลังใจซึ่งกันและกัน
+                ชุมชนผู้หญิงที่เข้าใจกัน แชร์ประสบการณ์ ให้กำลังใจ และเติบโตไปด้วยกัน
+              </p>
+            </motion.div>
+
+            {/* Parenting tips X Dr.XX Pillar */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-center group hover:scale-105 transition-transform duration-300"
+            >
+              <div className="bg-gradient-to-br from-pink-100 to-rose-100 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:from-pink-200 group-hover:to-rose-200 transition-colors">
+                <Baby className="h-10 w-10 text-pink-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Parenting tips X Dr.XX</h3>
+              <h4 className="text-lg font-medium text-pink-600 mb-2">คำแนะนำการเลี้ยงลูก</h4>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                คำแนะนำจากแพทย์เฉพาะทางเรื่องการเลี้ยงลูก พัฒนาการ และปัญหาที่พบบ่อย
               </p>
             </motion.div>
           </div>
@@ -342,14 +357,15 @@ export default function Home() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              โปรแกรมเฉพาะผู้หญิงทุกช่วงชีวิต
+              Exercise X Bebe - 3 คอร์สหลัก
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              ดูแลสุขภาพตามธรรมชาติของร่างกายผู้หญิง ตั้งแต่ก่อนตั้งครรภ์ หลังคลอด จนถึงการสมดุลฮอร์โมน
+              โปรแกรมออกกำลังกายเฉพาะผู้หญิง พร้อม e-book Relaxation & Nutrition แถมฟรี 
+              <span className="text-pink-600 font-semibold"> *ต้องการคอร์สเต็ม Relaxation & Nutrition สามารถลงทะเบียนแยกได้</span>
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredCourses.map((course, index) => (
               <motion.div
                 key={course.id}
@@ -374,11 +390,15 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-1">
                     {course.title}
                   </h3>
-                  <p className="text-gray-600 mb-4 font-medium">{course.instructor}</p>
-                  <p className="text-gray-500 text-sm mb-4">{course.description}</p>
+                  <p className="text-pink-600 text-sm font-medium mb-3">{course.subtitle}</p>
+                  <p className="text-gray-600 mb-2 font-medium">{course.instructor}</p>
+                  <p className="text-gray-500 text-sm mb-3">{course.description}</p>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                    <p className="text-yellow-700 text-sm font-medium">{course.bonus}</p>
+                  </div>
                   
                   <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                     <div className="flex items-center space-x-1">

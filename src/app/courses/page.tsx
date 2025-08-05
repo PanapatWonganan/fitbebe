@@ -167,20 +167,7 @@ export default function CoursesPage() {
 
 // Women's health and pregnancy programs
 const allCourses = [
-  {
-    id: 1,
-    title: "Prenatal Yoga: โยคะสำหรับคุณแม่ตั้งครรภ์",
-    instructor: "ดร.สุดา เวชกรรมคลอด",
-    duration: "9 เดือน",
-    students: 1850,
-    rating: 4.9,
-    price: 3990,
-    originalPrice: 5990,
-    image: "/course-prenatal-yoga.jpg",
-    category: "Prenatal",
-    level: "เริ่มต้น",
-    description: "โยคะที่ปลอดภัยและเหมาะสมสำหรับแต่ละไตรมาสของการตั้งครรภ์"
-  },
+
   {
     id: 2,
     title: "Postnatal Recovery: ฟื้นฟูร่างกายหลังคลอด",
@@ -223,20 +210,7 @@ const allCourses = [
     level: "เริ่มต้น",
     description: "เตรียมความพร้อมของร่างกายและจิตใจเพื่อการตั้งครรภ์ที่สุขภาพดี"
   },
-  {
-    id: 5,
-    title: "Gentle Movement for Pregnancy",
-    instructor: "ครูมานี ยิ่งยืน",
-    duration: "9 เดือน",
-    students: 1320,
-    rating: 4.8,
-    price: 2990,
-    originalPrice: 3990,
-    image: "/course-gentle-pregnancy.jpg",
-    category: "Prenatal",
-    level: "เริ่มต้น",
-    description: "การเคลื่อนไหวเบาๆ ที่ปลอดภัยตลอดช่วงตั้งครรภ์เพื่อสุขภาพแม่และลูก"
-  },
+
   {
     id: 6,
     title: "Breastfeeding Support & Core Recovery",

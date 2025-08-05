@@ -28,7 +28,6 @@ export function SearchFilter({ onSearch, onFilter }: SearchFilterProps) {
 
   const categories = [
     "ทั้งหมด",
-    "Prenatal",
     "Postnatal", 
     "Hormonal Balance",
     "Pre-conception",
