@@ -1,352 +1,394 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { dashboardAPI, DashboardData } from '@/lib/api/dashboard'
+import { motion } from 'framer-motion'
 import { 
   Heart, 
   Star, 
+  BookOpen, 
   Trophy, 
   Users, 
-  Target, 
   Calendar,
   CheckCircle,
   Flame,
   Sparkles,
-  Baby,
   Crown,
   Gift,
   TrendingUp,
   Award,
-  Smile
-} from 'lucide-react';
+  Play,
+  Clock,
+  Target
+} from 'lucide-react'
 
-export default function Dashboard() {
-  const [selectedPeriod, setSelectedPeriod] = useState('week');
+export default function DashboardPage() {
+  const { user, logout, loading, isAuthenticated } = useAuth()
+  const router = useRouter()
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  const [dashboardLoading, setDashboardLoading] = useState(true)
 
-  const userStats = {
-    currentStage: 'Hormonal Balance',
-    week: 7,
-    totalBadges: 12,
-    currentStreak: 7,
-    wellnessScore: 8.2,
-    communityImpact: 45,
-    nextMilestone: 'Mindful Mama',
-    daysToMilestone: 3
-  };
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      router.push('/auth')
+    }
+  }, [isAuthenticated, loading, router])
 
-  const badges = [
-    { id: 1, name: 'Healthy Mama', icon: '🤰', description: 'ออกกำลังกาย 7 วันติดต่อกัน', earned: true, date: '2024-01-15' },
-    { id: 2, name: 'Consistency Champion', icon: '💪', description: 'เข้าเรียนสม่ำเสมอ 30 วัน', earned: true, date: '2024-01-20' },
-    { id: 3, name: 'Supportive Sister', icon: '💝', description: 'ให้กำลังใจสมาชิกอื่น 50 ครั้ง', earned: true, date: '2024-01-25' },
-    { id: 4, name: 'Mindful Mama', icon: '🧘‍♀️', description: 'ทำสมาธิ 10 วันติดต่อกัน', earned: false, progress: 70 },
-    { id: 5, name: 'Nutrition Ninja', icon: '🥗', description: 'ติดตามอาหาร 14 วันติดต่อกัน', earned: false, progress: 43 },
-    { id: 6, name: 'Recovery Queen', icon: '👶', description: 'ฟื้นฟูหลังคลอดครบ 6 สัปดาห์', earned: false, progress: 0 }
-  ];
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      loadDashboardData()
+    }
+  }, [isAuthenticated, user])
 
-  const wellnessData = {
-    physical: 8.5,
-    mental: 7.8,
-    nutrition: 8.1,
-    community: 8.9
-  };
+  const loadDashboardData = async () => {
+    try {
+      setDashboardLoading(true)
+      const data = await dashboardAPI.getDashboardData()
+      setDashboardData(data)
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error)
+    } finally {
+      setDashboardLoading(false)
+    }
+  }
 
-  const weeklyProgress = [
-    { day: 'จ', physical: 8, mental: 7, nutrition: 9, community: 8 },
-    { day: 'อ', physical: 9, mental: 8, nutrition: 8, community: 9 },
-    { day: 'พ', physical: 7, mental: 8, nutrition: 8, community: 8 },
-    { day: 'พฤ', physical: 9, mental: 9, nutrition: 9, community: 9 },
-    { day: 'ศ', physical: 8, mental: 7, nutrition: 8, community: 9 },
-    { day: 'ส', physical: 9, mental: 8, nutrition: 8, community: 8 },
-    { day: 'อา', physical: 8, mental: 8, nutrition: 8, community: 9 }
-  ];
+  if (loading || dashboardLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-pink-200 border-t-pink-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">
+            {loading ? 'กำลังตรวจสอบการเข้าสู่ระบบ...' : 'กำลังโหลดข้อมูล Dashboard...'}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
-  const achievements = [
-    { text: 'เสร็จสิ้นบทเรียน Hormone Reset', time: '2 ชั่วโมงที่แล้ว', type: 'course' },
-    { text: 'ได้ badge "Healthy Mama"', time: '1 วันที่แล้ว', type: 'badge' },
-    { text: 'ให้กำลังใจสมาชิก 5 คน', time: '3 วันที่แล้ว', type: 'community' },
-    { text: 'Wellness Score ถึง 8.0+', time: '5 วันที่แล้ว', type: 'milestone' }
-  ];
+  if (!isAuthenticated || !user) {
+    return null
+  }
+
+  const getRoleInfo = (role: string) => {
+    switch (role) {
+      case 'instructor':
+        return {
+          title: 'ผู้สอน',
+          subtitle: 'แชร์ความรู้และสร้างแรงบันดาลใจ',
+          color: 'from-purple-500 to-pink-500',
+          icon: Crown
+        }
+      case 'admin':
+        return {
+          title: 'ผู้ดูแลระบบ',
+          subtitle: 'จัดการระบบและช่วยเหลือสมาชิก',
+          color: 'from-indigo-500 to-purple-500',
+          icon: Award
+        }
+      default:
+        return {
+          title: 'ผู้เรียน',
+          subtitle: 'เริ่มต้นการเดินทางสู่สุขภาพที่ดี',
+          color: 'from-pink-500 to-rose-500',
+          icon: Heart
+        }
+    }
+  }
+
+  const roleInfo = getRoleInfo(user.role)
+  const RoleIcon = roleInfo.icon
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-rose-50">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Header */}
+        {/* Welcome Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8"
+          className="text-center mb-8"
         >
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">🌸 Your Wellness Garden</h1>
-              <p className="text-gray-600">สวัสดีคุณแม่! วันนี้รู้สึกยังไงบ้างคะ</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 bg-yellow-100 px-4 py-2 rounded-full">
-                <Flame className="h-5 w-5 text-orange-500" />
-                <span className="font-semibold text-gray-900">{userStats.currentStreak} วันติดต่อกัน</span>
-              </div>
+          <div className="flex items-center justify-center mb-4">
+            <div className={`bg-gradient-to-r ${roleInfo.color} p-3 rounded-2xl shadow-lg`}>
+              <RoleIcon className="h-8 w-8 text-white" />
             </div>
           </div>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            สวัสดี{user.fullName ? `คุณ${user.fullName}` : ''} 💕
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
+            {roleInfo.subtitle}
+          </p>
         </motion.div>
 
-        {/* Current Journey Status */}
+        {/* User Status Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-gradient-to-r from-pink-500 to-rose-500 rounded-2xl p-6 text-white mb-8"
+          className={`bg-gradient-to-r ${roleInfo.color} rounded-3xl p-8 text-white mb-8 shadow-xl`}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="bg-white/20 p-3 rounded-full">
-                <Baby className="h-8 w-8" />
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="flex items-center space-x-6 mb-6 md:mb-0">
+              <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.fullName || user.email}
+                    className="w-20 h-20 rounded-2xl object-cover"
+                  />
+                ) : (
+                  <RoleIcon className="w-10 h-10 text-white" />
+                )}
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{userStats.currentStage} Journey</h2>
-                <p className="text-pink-100">สัปดาห์ที่ {userStats.week} - คุณทำได้ดีมากค่ะ! 💕</p>
+                <h2 className="text-2xl font-bold mb-1">
+                  {user.fullName || user.email}
+                </h2>
+                <p className="text-white/80 mb-2">{roleInfo.title}</p>
+                <div className="flex items-center space-x-3">
+                  <div className={`flex items-center space-x-1 px-3 py-1 rounded-full ${
+                    user.emailVerified ? 'bg-green-400/30' : 'bg-yellow-400/30'
+                  }`}>
+                    <div className={`w-2 h-2 rounded-full ${
+                      user.emailVerified ? 'bg-green-300' : 'bg-yellow-300'
+                    }`}></div>
+                    <span className="text-xs">
+                      {user.emailVerified ? 'ยืนยันแล้ว' : 'รอยืนยัน'}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-white/20">
+                    <Calendar className="w-3 h-3" />
+                    <span className="text-xs">สมาชิกใหม่</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-3xl font-bold">{userStats.wellnessScore}</div>
-              <div className="text-pink-100">Wellness Score</div>
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-1">
+                {dashboardData?.stats.enrolledCourses || 0}
+              </div>
+              <div className="text-white/80 text-sm">
+                {user.role === 'student' ? 'คอร์สที่เรียน' : user.role === 'instructor' ? 'คอร์สที่สอน' : 'ระบบทั้งหมด'}
+              </div>
             </div>
           </div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left Column - Main Dashboard */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
             
-            {/* Wellness Score Chart */}
+            {/* Quick Stats */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-pink-100"
+              className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-gray-900">Wellness Balance</h3>
-                <div className="flex bg-gray-100 rounded-lg p-1">
-                  {['week', 'month'].map((period) => (
-                    <button
-                      key={period}
-                      onClick={() => setSelectedPeriod(period)}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        selectedPeriod === period
-                          ? 'bg-pink-500 text-white'
-                          : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      {period === 'week' ? 'สัปดาห์' : 'เดือน'}
-                    </button>
-                  ))}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-3 rounded-xl">
+                    <BookOpen className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-gray-600 dark:text-gray-300 text-sm font-medium">
+                      {user.role === 'student' ? 'คอร์สที่ลงทะเบียน' : 'คอร์สทั้งหมด'}
+                    </h3>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {dashboardData?.stats.enrolledCourses || 0}
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Wellness Categories */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-                {[
-                  { key: 'physical', label: 'Physical', icon: Heart, color: 'pink', value: wellnessData.physical },
-                  { key: 'mental', label: 'Mental', icon: Smile, color: 'purple', value: wellnessData.mental },
-                  { key: 'nutrition', label: 'Nutrition', icon: Sparkles, color: 'green', value: wellnessData.nutrition },
-                  { key: 'community', label: 'Community', icon: Users, color: 'blue', value: wellnessData.community }
-                ].map((category) => {
-                  const Icon = category.icon;
-                  return (
-                    <div key={category.key} className="text-center">
-                      <div className={`bg-${category.color}-100 rounded-full p-3 w-fit mx-auto mb-2`}>
-                        <Icon className={`h-6 w-6 text-${category.color}-600`} />
-                      </div>
-                      <div className={`text-2xl font-bold text-${category.color}-600 mb-1`}>
-                        {category.value}
-                      </div>
-                      <div className="text-sm text-gray-600">{category.label}</div>
-                    </div>
-                  );
-                })}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-3 rounded-xl">
+                    <TrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-gray-600 dark:text-gray-300 text-sm font-medium">ความก้าวหน้า</h3>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {Math.round(dashboardData?.stats.totalProgress || 0)}%
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              {/* Weekly Progress Chart */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900">ความคืบหน้าสัปดาห์นี้</h4>
-                <div className="flex justify-between items-end h-32 bg-gray-50 rounded-lg p-4">
-                  {weeklyProgress.map((day, index) => (
-                    <div key={index} className="flex flex-col items-center space-y-2">
-                      <div className="flex flex-col space-y-1">
-                        {[
-                          { value: day.physical, color: 'bg-pink-400' },
-                          { value: day.mental, color: 'bg-purple-400' },
-                          { value: day.nutrition, color: 'bg-green-400' },
-                          { value: day.community, color: 'bg-blue-400' }
-                        ].map((bar, barIndex) => (
-                          <div
-                            key={barIndex}
-                            className={`w-4 ${bar.color} rounded-sm transition-all duration-500`}
-                            style={{ height: `${bar.value * 3}px` }}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-xs text-gray-600">{day.day}</span>
-                    </div>
-                  ))}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-xl">
+                    <Trophy className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-gray-600 dark:text-gray-300 text-sm font-medium">ใบประกาศนียบัตร</h3>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {dashboardData?.stats.certificatesEarned || 0}
+                    </p>
+                  </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* Next Milestone */}
+            {/* Main Content Area */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-pink-100"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-yellow-100 p-3 rounded-full">
-                    <Target className="h-6 w-6 text-yellow-600" />
+              <div className="text-center py-12">
+                <div className="mb-6">
+                  <div className="w-24 h-24 bg-gradient-to-r from-pink-100 to-rose-100 dark:from-pink-900/30 dark:to-rose-900/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                    {user.role === 'student' ? (
+                      <Heart className="w-12 h-12 text-pink-500" />
+                    ) : user.role === 'instructor' ? (
+                      <Crown className="w-12 h-12 text-purple-500" />
+                    ) : (
+                      <Award className="w-12 h-12 text-indigo-500" />
+                    )}
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">เป้าหมายถัดไป</h3>
-                    <p className="text-gray-600">Badge &ldquo;{userStats.nextMilestone}&rdquo;</p>
-                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                    {user.role === 'student' 
+                      ? 'พร้อมเริ่มต้นการเดินทางแล้วหรือยัง?'
+                      : user.role === 'instructor'
+                      ? 'เริ่มสร้างคอร์สแรกของคุณ'
+                      : 'จัดการระบบ BoostMe'
+                    }
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
+                    {user.role === 'student' 
+                      ? 'เลือกโปรแกรมสุขภาพที่เหมาะกับคุณ และเริ่มสร้างนิสัยดีๆ ไปด้วยกัน'
+                      : user.role === 'instructor'
+                      ? 'แชร์ความรู้และประสบการณ์ของคุณกับสมาชิกทั่วโลก สร้างแรงบันดาลใจให้ผู้คน'
+                      : 'ดูแลระบบและช่วยให้สมาชิกได้รับประสบการณ์ที่ดีที่สุด'
+                    }
+                  </p>
                 </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-yellow-600">{userStats.daysToMilestone}</div>
-                  <div className="text-sm text-gray-600">วันให้ถึงเป้าหมาย</div>
-                </div>
-              </div>
-              
-              <div className="mt-4">
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>ความคืบหน้า</span>
-                  <span>70%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-3 rounded-full transition-all duration-500" style={{ width: '70%' }} />
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <motion.a
+                    href="/courses"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-8 py-3 bg-gradient-to-r ${roleInfo.color} text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 justify-center`}
+                  >
+                    <Play className="w-5 h-5" />
+                    <span>
+                      {user.role === 'student' 
+                        ? 'เริ่มเรียนเลย' 
+                        : user.role === 'instructor'
+                        ? 'สร้างคอร์ส'
+                        : 'จัดการระบบ'
+                      }
+                    </span>
+                  </motion.a>
+                  
+                  <motion.a
+                    href="/courses"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-8 py-3 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 flex items-center space-x-2 justify-center"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    <span>ดูทั้งหมด</span>
+                  </motion.a>
                 </div>
               </div>
             </motion.div>
 
           </div>
 
-          {/* Right Column - Sidebar */}
-          <div className="space-y-6">
+          {/* Sidebar */}
+          <div className="space-y-8">
             
-            {/* Badge Collection */}
+            {/* Quick Actions */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-pink-100"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Badge Collection</h3>
-                <div className="flex items-center space-x-1 bg-pink-100 px-3 py-1 rounded-full">
-                  <Trophy className="h-4 w-4 text-pink-600" />
-                  <span className="text-sm font-semibold text-pink-600">{userStats.totalBadges}</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                {badges.slice(0, 6).map((badge) => (
-                  <div
-                    key={badge.id}
-                    className={`relative p-3 rounded-xl text-center transition-all duration-300 ${
-                      badge.earned
-                        ? 'bg-gradient-to-b from-yellow-100 to-yellow-200 border-2 border-yellow-300'
-                        : 'bg-gray-50 border-2 border-gray-200 opacity-60'
-                    }`}
-                  >
-                    <div className="text-2xl mb-1">{badge.icon}</div>
-                    <div className="text-xs font-medium text-gray-700">{badge.name}</div>
-                    
-                    {!badge.earned && badge.progress && (
-                      <div className="absolute -bottom-1 left-1 right-1">
-                        <div className="w-full bg-gray-300 rounded-full h-1.5">
-                          <div
-                            className="bg-pink-500 h-1.5 rounded-full transition-all duration-500"
-                            style={{ width: `${badge.progress}%` }}
-                          />
-                        </div>
-                      </div>
-                    )}
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center space-x-2">
+                <Sparkles className="w-5 h-5 text-pink-500" />
+                <span>การดำเนินการด่วน</span>
+              </h3>
+              
+              <div className="space-y-4">
+                <button className="w-full flex items-center space-x-3 p-4 rounded-xl bg-gradient-to-r from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 hover:from-pink-100 hover:to-rose-100 dark:hover:from-pink-900/30 dark:hover:to-rose-900/30 transition-all duration-300 text-left">
+                  <Heart className="w-5 h-5 text-pink-500" />
+                  <div>
+                    <div className="font-medium text-gray-900 dark:text-white">แก้ไขโปรไฟล์</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">อัปเดตข้อมูลส่วนตัว</div>
                   </div>
-                ))}
+                </button>
+                
+                <button className="w-full flex items-center space-x-3 p-4 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 hover:from-purple-100 hover:to-pink-100 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30 transition-all duration-300 text-left">
+                  <Target className="w-5 h-5 text-purple-500" />
+                  <div>
+                    <div className="font-medium text-gray-900 dark:text-white">ตั้งเป้าหมาย</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">วางแผนการเรียนรู้</div>
+                  </div>
+                </button>
+                
+                <button className="w-full flex items-center space-x-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 hover:from-green-100 hover:to-emerald-100 dark:hover:from-green-900/30 dark:hover:to-emerald-900/30 transition-all duration-300 text-left">
+                  <Users className="w-5 h-5 text-green-500" />
+                  <div>
+                    <div className="font-medium text-gray-900 dark:text-white">เข้าร่วมชุมชน</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">พูดคุยกับสมาชิกอื่น</div>
+                  </div>
+                </button>
               </div>
-
-              <button className="w-full mt-4 text-pink-600 hover:text-pink-700 text-sm font-medium">
-                ดู Badge ทั้งหมด →
-              </button>
             </motion.div>
 
-            {/* Recent Achievements */}
+            {/* Achievement Badge */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-pink-100"
+              className="bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 rounded-3xl p-6 text-white shadow-xl"
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">ความสำเร็จล่าสุด</h3>
-              
-              <div className="space-y-3">
-                {achievements.map((achievement, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className={`p-2 rounded-full ${
-                      achievement.type === 'badge' ? 'bg-yellow-100' :
-                      achievement.type === 'course' ? 'bg-pink-100' :
-                      achievement.type === 'community' ? 'bg-blue-100' :
-                      'bg-green-100'
-                    }`}>
-                      {achievement.type === 'badge' ? <Award className="h-4 w-4 text-yellow-600" /> :
-                       achievement.type === 'course' ? <CheckCircle className="h-4 w-4 text-pink-600" /> :
-                       achievement.type === 'community' ? <Users className="h-4 w-4 text-blue-600" /> :
-                       <TrendingUp className="h-4 w-4 text-green-600" />}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{achievement.text}</p>
-                      <p className="text-xs text-gray-500">{achievement.time}</p>
-                    </div>
-                  </div>
-                ))}
+              <div className="text-center">
+                <div className="bg-white/20 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Gift className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="font-bold text-lg mb-2">ยินดีต้อนรับ!</h3>
+                <p className="text-yellow-100 text-sm mb-4">
+                  คุณได้รับ badge "สมาชิกใหม่" แล้ว
+                </p>
+                <div className="bg-white/20 rounded-xl p-3">
+                  <div className="text-2xl mb-1">🌟</div>
+                  <div className="text-xs">Badge แรกของคุณ</div>
+                </div>
               </div>
             </motion.div>
 
-            {/* Community Impact */}
+            {/* Progress Summary - Debug Info */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200"
+              className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 border-2 border-dashed border-gray-300 dark:border-gray-600"
             >
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="bg-blue-200 p-2 rounded-full">
-                  <Users className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Community Impact</h3>
-                  <p className="text-sm text-gray-600">ผลกระทบเชิงบวกต่อชุมชน</p>
-                </div>
-              </div>
-
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-1">{userStats.communityImpact}</div>
-                <p className="text-sm text-gray-600 mb-4">การให้กำลังใจที่แจกออกไป</p>
-                
-                <div className="bg-white/50 rounded-lg p-3">
-                  <p className="text-xs text-gray-700">
-                    &ldquo;คุณช่วยให้แม่ท้องและแม่ใหม่ {userStats.communityImpact} คนรู้สึกมีกำลังใจมากขึ้น ❤️&rdquo;
-                  </p>
-                </div>
+              <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-4 flex items-center space-x-2">
+                <CheckCircle className="w-4 h-4" />
+                <span>ข้อมูลผู้ใช้ (Debug)</span>
+              </h3>
+              <div className="text-xs text-gray-600 dark:text-gray-400 space-y-2">
+                <div><span className="font-medium">ID:</span> {user.id.slice(0, 8)}...</div>
+                <div><span className="font-medium">Email:</span> {user.email}</div>
+                <div><span className="font-medium">Role:</span> {user.role}</div>
+                <div><span className="font-medium">Verified:</span> {user.emailVerified ? 'Yes' : 'No'}</div>
               </div>
             </motion.div>
-
           </div>
         </div>
       </div>
     </div>
-  );
-} 
+  )
+}

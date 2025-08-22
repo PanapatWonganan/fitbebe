@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Heart, 
+  ArrowLeft, 
   Star, 
   Clock, 
   Users, 
@@ -18,10 +18,13 @@ import {
   MessageCircle,
   ChevronRight,
   Calendar,
-  Stethoscope
+  Stethoscope,
+  Lock,
+  Gift
 } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { fetchCourseLessons, CourseWithLessons } from '@/lib/api';
 
 // Mock course data - in real app, this would come from API
 const courseData = {
@@ -107,23 +110,140 @@ const courseData = {
 
 export default function CoursePage() {
   const params = useParams();
-  const courseId = parseInt(params.id as string);
-  const course = courseData[courseId as keyof typeof courseData];
+  const router = useRouter();
+  const courseId = params.id as string;
 
+  const [courseData, setCourseData] = useState<CourseWithLessons | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showSafetyModal, setShowSafetyModal] = useState(false);
 
-  if (!course) {
+  useEffect(() => {
+    loadCourse();
+  }, [courseId]);
+
+  const loadCourse = async () => {
+    setLoading(true);
+    setError(null);
+
+    // If courseId is a number like "198", try to find a course from the courses list
+    if (/^\d+$/.test(courseId)) {
+      // For demo purposes, redirect to the existing course
+      const demoCoursesMapping: { [key: string]: string } = {
+        '1': '0198b253-9405-705d-bd25-8a0a5b787401',
+        '2': '0198b253-9405-705d-bd25-8a0a5b787401',
+        '198': '0198b253-9405-705d-bd25-8a0a5b787401'
+      };
+      
+      const realCourseId = demoCoursesMapping[courseId];
+      if (realCourseId) {
+        router.replace(`/courses/${realCourseId}`);
+        return;
+      }
+    }
+
+    const result = await fetchCourseLessons(courseId);
+    
+    if (result.error) {
+      setError(result.error);
+    } else if (result.data) {
+      setCourseData(result.data);
+    }
+    
+    setLoading(false);
+  };
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-pink-50 to-rose-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">ไม่พบข้อมูลคอร์ส</h1>
-          <Link href="/courses" className="text-pink-600 hover:text-pink-700">
-            กลับไปหน้าคอร์สทั้งหมด
-          </Link>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">กำลังโหลดข้อมูลคอร์ส...</p>
         </div>
       </div>
     );
   }
+
+  if (error || !courseData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-pink-50 to-rose-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto">
+          <div className="text-red-500 text-6xl mb-4">😕</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">ไม่พบข้อมูลคอร์ส</h2>
+          <p className="text-gray-600 mb-6">
+            {error || 'ไม่สามารถหาคอร์สที่คุณต้องการได้'}
+          </p>
+          <div className="space-y-3">
+            <Link 
+              href="/courses"
+              className="block bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors"
+            >
+              ดูคอร์สทั้งหมด
+            </Link>
+            <button 
+              onClick={() => router.back()}
+              className="block w-full text-gray-500 hover:text-pink-600 transition-colors"
+            >
+              ← กลับหน้าก่อน
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const { course, lessons } = courseData;
+  const freeLessons = lessons.filter(lesson => lesson.is_free);
+  const paidLessons = lessons.filter(lesson => !lesson.is_free);
+
+  // Default safety information for courses that don't have it in the API
+  const defaultSafetyInfo = {
+    suitable: [
+      "ผู้หญิงวัย 18-50 ปี",
+      "สามารถออกกำลังกายได้ปกติ",
+      "ต้องการปรับปรุงสุขภาพ",
+      "ไม่มีข้อจำกัดทางการแพทย์"
+    ],
+    notSuitable: [
+      "มีปัญหาสุขภาพรุนแรง",
+      "ได้รับคำแนะนำจากแพทย์ให้หลีกเลี่ยงการออกกำลังกาย",
+      "มีการบาดเจ็บที่ยังไม่หาย",
+      "ตั้งครรภ์โดยไม่ได้รับอนุญาตจากแพทย์"
+    ],
+    stopSigns: [
+      "ปวดหน้าอก หรือ หายใจลำบาก",
+      "ปวดศีรษะรุนแรงผิดปกติ",
+      "วิงเวียนมากผิดปกติ",
+      "ปวดข้อต่อหรือกล้ามเนื้อรุนแรง"
+    ]
+  };
+
+  const safetyInfo = course.safetyInfo || defaultSafetyInfo;
+
+  // Add default values for missing course properties
+  const courseWithDefaults = {
+    ...course,
+    benefits: course.benefits || [
+      "เพิ่มความแข็งแรงและความยืดหยุ่น",
+      "ลดความเครียดและเพิ่มสมาธิ",
+      "ปรับปรุงการนอนหลับ",
+      "เสริมสร้างสมดุลและการประสานงาน",
+      "เพิ่มพลังงานและความมั่นใจ",
+      "ปรับปรุงสุขภาพโดยรวม"
+    ],
+    requirements: course.requirements || [
+      "เสื่อโยคะ",
+      "พื้นที่ออกกำลังกายขนาด 2x2 เมตร",
+      "เครื่องเล่นวิดีโอ (มือถือ/แท็บเล็ต/คอมพิวเตอร์)",
+      "น้ำดื่ม"
+    ],
+    instructor: course.instructor || "ทีม BoostMe",
+    instructorTitle: course.instructorTitle || "ผู้เชี่ยวชาญสุขภาพผู้หญิง",
+    instructorExperience: course.instructorExperience || "ประสบการณ์ 10+ ปี",
+    students: course.students || 500,
+    rating: course.rating || 4.8,
+    image: course.image || "https://scontent.fbkk2-8.fna.fbcdn.net/v/t39.30808-6/481298223_1217952123033831_5937761994390873059_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_ohc=40lNCr78dCoQ7kNvwH2KfkB&_nc_oc=AdnfZ00IyMApu3eF6zX7w05KcCWfqeEqS7YQX1cIkzasI9QBvsla4HbBkTz5DtGR5v1cdUMOWwOMeooklUYwb--w&_nc_zt=23&_nc_ht=scontent.fbkk2-8.fna&_nc_gid=4HKY7h2LeYd2AV8-wt8gBg&oh=00_AfQ3WwIgKKSAP6DrvWjjNemDHMv5Gc-mfgRES7qN7fmtkw&oe=688D7CC5"
+  };
 
   const handleStartCourse = () => {
     // Navigate to health assessment
@@ -147,17 +267,17 @@ export default function CoursePage() {
             >
               <div className="flex items-center space-x-2 text-pink-100">
                 <Baby className="h-5 w-5" />
-                <span className="text-sm font-medium">{course.category}</span>
+                <span className="text-sm font-medium">Exercise X Bebe</span>
                 <span className="text-pink-200">•</span>
-                <span className="text-sm">{course.level}</span>
+                <span className="text-sm">เริ่มต้น</span>
               </div>
               
               <h1 className="text-3xl sm:text-4xl font-bold leading-tight">
-                {course.title}
+                {courseWithDefaults.title}
               </h1>
               
               <p className="text-lg text-pink-100 leading-relaxed">
-                {course.description}
+                {courseWithDefaults.description || 'คอร์สออกกำลังกายเฉพาะผู้หญิง เพื่อสุขภาพที่ดีและรูปร่างที่สวยงาม'}
               </p>
               
               {/* Instructor */}
@@ -166,9 +286,9 @@ export default function CoursePage() {
                   <Stethoscope className="h-6 w-6" />
                 </div>
                 <div>
-                  <div className="font-semibold">{course.instructor}</div>
-                  <div className="text-pink-100 text-sm">{course.instructorTitle}</div>
-                  <div className="text-pink-200 text-sm">{course.instructorExperience}</div>
+                  <div className="font-semibold">ทีม BoostMe</div>
+                  <div className="text-pink-100 text-sm">ผู้เชี่ยวชาญสุขภาพผู้หญิง</div>
+                  <div className="text-pink-200 text-sm">ประสบการณ์ 10+ ปี</div>
                 </div>
               </div>
               
@@ -176,19 +296,19 @@ export default function CoursePage() {
               <div className="flex flex-wrap gap-6 text-pink-100">
                 <div className="flex items-center space-x-2">
                   <Users className="h-5 w-5" />
-                  <span>{course.students.toLocaleString()} คน</span>
+                  <span>500+ คน</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Star className="h-5 w-5 text-yellow-300 fill-current" />
-                  <span>{course.rating} ({course.reviews} รีวิว)</span>
+                  <span>4.8 (100+ รีวิว)</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Clock className="h-5 w-5" />
-                  <span>{course.duration}</span>
+                  <span>{lessons.reduce((total, lesson) => total + lesson.duration_minutes, 0)} นาที</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <BookOpen className="h-5 w-5" />
-                  <span>{course.totalLessons} บทเรียน</span>
+                  <span>{lessons.length} บทเรียน</span>
                 </div>
               </div>
             </motion.div>
@@ -205,7 +325,7 @@ export default function CoursePage() {
                   <div 
                     className="w-full h-full bg-cover bg-center relative"
                     style={{
-                      backgroundImage: `url('${course.image}')`
+                      backgroundImage: `url('${courseWithDefaults.image}')`
                     }}
                   >
                     <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
@@ -223,11 +343,11 @@ export default function CoursePage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-2xl font-bold">฿{course.price.toLocaleString()}</div>
-                      <div className="text-pink-200 line-through text-sm">฿{course.originalPrice.toLocaleString()}</div>
+                      <div className="text-2xl font-bold">฿1,000</div>
+                      <div className="text-pink-200 line-through text-sm">฿1,400</div>
                     </div>
                     <div className="bg-yellow-300 text-gray-900 px-3 py-1 rounded-full text-sm font-medium">
-                      ประหยัด {Math.round((1 - course.price / course.originalPrice) * 100)}%
+                      ประหยัด 29%
                     </div>
                   </div>
                   
@@ -280,7 +400,7 @@ export default function CoursePage() {
                       เหมาะสำหรับ:
                     </h4>
                     <ul className="space-y-1 text-sm text-gray-700">
-                      {course.safetyInfo.suitable.map((item, index) => (
+                      {safetyInfo.suitable.map((item, index) => (
                         <li key={index} className="flex items-start">
                           <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-2 flex-shrink-0" />
                           {item}
@@ -295,7 +415,7 @@ export default function CoursePage() {
                       ไม่เหมาะสำหรับ:
                     </h4>
                     <ul className="space-y-1 text-sm text-gray-700">
-                      {course.safetyInfo.notSuitable.slice(0, 3).map((item, index) => (
+                      {safetyInfo.notSuitable.slice(0, 3).map((item, index) => (
                         <li key={index} className="flex items-start">
                           <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-2 flex-shrink-0" />
                           {item}
@@ -319,38 +439,98 @@ export default function CoursePage() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="bg-white rounded-2xl p-6 shadow-sm border border-pink-100"
               >
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">เนื้อหาการเรียน</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">เนื้อหาในคอร์ส</h3>
                 
-                <div className="space-y-6">
-                  {course.curriculum.map((section, index) => (
-                    <div key={index} className="border border-gray-200 rounded-xl p-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-lg font-semibold text-gray-900">{section.week}</h4>
-                        <span className="text-sm text-gray-500">{section.lessons.length} บทเรียน</span>
-                      </div>
-                      <h5 className="font-medium text-pink-600 mb-3">{section.title}</h5>
-                      
-                      <div className="space-y-2">
-                        {section.lessons.map((lesson, lessonIndex) => (
-                          <div key={lessonIndex} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div className="flex items-center space-x-3">
-                              <div className={`p-2 rounded-full ${
-                                lesson.type === 'theory' ? 'bg-blue-100' : 'bg-pink-100'
-                              }`}>
-                                {lesson.type === 'theory' ? 
-                                  <BookOpen className={`h-4 w-4 ${lesson.type === 'theory' ? 'text-blue-600' : 'text-pink-600'}`} /> :
-                                  <Play className="h-4 w-4 text-pink-600" />
-                                }
-                              </div>
-                              <span className="text-gray-900 font-medium">{lesson.title}</span>
-                            </div>
-                            <span className="text-gray-500 text-sm">{lesson.duration}</span>
-                          </div>
-                        ))}
-                      </div>
+                {/* Free Lessons */}
+                {freeLessons.length > 0 && (
+                  <div className="mb-8">
+                    <div className="flex items-center space-x-2 mb-4">
+                      <Gift className="w-5 h-5 text-green-500" />
+                      <h4 className="text-lg font-semibold text-gray-900">บทเรียนฟรี</h4>
+                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                        ดูได้ฟรี
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    
+                    <div className="space-y-3">
+                      {freeLessons.map((lesson, index) => (
+                        <motion.div
+                          key={lesson.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow group"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <Play className="w-5 h-5 text-green-600" />
+                              </div>
+                              <div>
+                                <h5 className="font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+                                  {lesson.order_index}. {lesson.title}
+                                </h5>
+                                <p className="text-sm text-gray-500">
+                                  {lesson.description || 'บทเรียนพื้นฐาน'} • {lesson.duration_minutes} นาที
+                                </p>
+                              </div>
+                            </div>
+                            <Link 
+                              href={`/lessons/${lesson.id}`}
+                              className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition-colors"
+                            >
+                              ดูฟรี
+                            </Link>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Paid Lessons */}
+                {paidLessons.length > 0 && (
+                  <div>
+                    <div className="flex items-center space-x-2 mb-4">
+                      <Lock className="w-5 h-5 text-orange-500" />
+                      <h4 className="text-lg font-semibold text-gray-900">บทเรียนแบบเต็ม</h4>
+                      <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs">
+                        ต้องซื้อคอร์ส
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {paidLessons.map((lesson, index) => (
+                        <motion.div
+                          key={lesson.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: (freeLessons.length + index) * 0.1 }}
+                          className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                                <Lock className="w-5 h-5 text-gray-400" />
+                              </div>
+                              <div>
+                                <h5 className="font-semibold text-gray-700">
+                                  {lesson.order_index}. {lesson.title}
+                                </h5>
+                                <p className="text-sm text-gray-500">
+                                  {lesson.description || 'บทเรียนขั้นสูง'} • {lesson.duration_minutes} นาที
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-gray-400 text-sm">
+                              ล็อค
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </motion.div>
 
               {/* Benefits */}
@@ -363,7 +543,7 @@ export default function CoursePage() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">ประโยชน์ที่คุณจะได้รับ</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {course.benefits.map((benefit, index) => (
+                  {courseWithDefaults.benefits.map((benefit, index) => (
                     <div key={index} className="flex items-center space-x-3">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
                       <span className="text-gray-700">{benefit}</span>
@@ -386,7 +566,7 @@ export default function CoursePage() {
                 <h3 className="text-lg font-bold text-gray-900 mb-4">สิ่งที่ต้องเตรียม</h3>
                 
                 <ul className="space-y-3">
-                  {course.requirements.map((item, index) => (
+                  {courseWithDefaults.requirements.map((item, index) => (
                     <li key={index} className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-pink-500 rounded-full flex-shrink-0" />
                       <span className="text-gray-700 text-sm">{item}</span>
@@ -408,18 +588,18 @@ export default function CoursePage() {
                   <div className="bg-pink-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                     <Stethoscope className="h-8 w-8 text-pink-600" />
                   </div>
-                  <h4 className="font-semibold text-gray-900">{course.instructor}</h4>
-                  <p className="text-pink-600 text-sm font-medium">{course.instructorTitle}</p>
-                  <p className="text-gray-600 text-sm mt-2">{course.instructorExperience}</p>
+                  <h4 className="font-semibold text-gray-900">{courseWithDefaults.instructor}</h4>
+                  <p className="text-pink-600 text-sm font-medium">{courseWithDefaults.instructorTitle}</p>
+                  <p className="text-gray-600 text-sm mt-2">{courseWithDefaults.instructorExperience}</p>
                   
                   <div className="mt-4 p-4 bg-white rounded-xl">
                     <div className="grid grid-cols-2 gap-4 text-center">
                       <div>
-                        <div className="text-2xl font-bold text-pink-600">{course.students.toLocaleString()}</div>
+                        <div className="text-2xl font-bold text-pink-600">{courseWithDefaults.students.toLocaleString()}</div>
                         <div className="text-xs text-gray-600">นักเรียน</div>
                       </div>
                       <div>
-                        <div className="text-2xl font-bold text-pink-600">{course.rating}</div>
+                        <div className="text-2xl font-bold text-pink-600">{courseWithDefaults.rating}</div>
                         <div className="text-xs text-gray-600">คะแนน</div>
                       </div>
                     </div>
@@ -479,7 +659,7 @@ export default function CoursePage() {
                   หยุดออกกำลังกายทันทีเมื่อมีอาการเหล่านี้:
                 </h4>
                 <ul className="space-y-2">
-                  {course.safetyInfo.stopSigns.map((sign, index) => (
+                  {safetyInfo.stopSigns.map((sign, index) => (
                     <li key={index} className="flex items-start text-red-700">
                       <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0" />
                       {sign}
@@ -492,7 +672,7 @@ export default function CoursePage() {
                 <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                   <h4 className="font-semibold text-green-800 mb-3">✅ เหมาะสำหรับ:</h4>
                   <ul className="space-y-1">
-                    {course.safetyInfo.suitable.map((item, index) => (
+                    {safetyInfo.suitable.map((item, index) => (
                       <li key={index} className="text-green-700 text-sm">{item}</li>
                     ))}
                   </ul>
@@ -501,7 +681,7 @@ export default function CoursePage() {
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                   <h4 className="font-semibold text-red-800 mb-3">❌ ไม่เหมาะสำหรับ:</h4>
                   <ul className="space-y-1">
-                    {course.safetyInfo.notSuitable.map((item, index) => (
+                    {safetyInfo.notSuitable.map((item, index) => (
                       <li key={index} className="text-red-700 text-sm">{item}</li>
                     ))}
                   </ul>

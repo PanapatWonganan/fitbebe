@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Award, Star, Trophy, Sparkles, Heart, Target, ArrowRight, 
-  CheckCircle, Gift, Crown, Flame, Users, TrendingUp, Baby,
-  Share2, Download, BookOpen, Calendar, Clock
+  Trophy, Sparkles, Target, ArrowRight, 
+  CheckCircle, Users,
+  Share2, Download, BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -92,7 +92,6 @@ export default function LessonCompletePage() {
   const params = useParams();
   const router = useRouter();
   const courseId = parseInt(params.id as string);
-  const lessonId = parseInt(params.lessonId as string);
   
   const [showCelebration, setShowCelebration] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);

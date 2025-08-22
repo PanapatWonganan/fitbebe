@@ -3,8 +3,11 @@ import { Kanit } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { GardenProvider } from "@/contexts/GardenContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import NotificationContainer from "@/components/NotificationContainer";
 
 const kanit = Kanit({ 
   subsets: ["thai", "latin"], 
@@ -61,33 +64,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="th" suppressHydrationWarning className="light">
+    <html lang="th" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#ec4899" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const savedTheme = localStorage.getItem('boostme-theme') || 'light';
-                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                const theme = savedTheme || systemTheme;
-                document.documentElement.className = theme;
-                document.documentElement.setAttribute('data-theme', theme);
-              } catch (e) {}
-            `,
-          }}
-        />
       </head>
       <body className={`${kanit.className} antialiased transition-colors duration-300`}>
-        <ThemeProvider>
-          <ErrorBoundary>
-            <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-          </ErrorBoundary>
-        </ThemeProvider>
+        <NotificationProvider>
+          <AuthProvider>
+            <GardenProvider>
+              <ErrorBoundary>
+                <div className="min-h-screen flex flex-col bg-white">
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                  <NotificationContainer />
+                </div>
+              </ErrorBoundary>
+            </GardenProvider>
+          </AuthProvider>
+        </NotificationProvider>
       </body>
     </html>
   );

@@ -3,7 +3,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Users, Star, Clock, CheckCircle, ArrowRight, Play, Heart, Dumbbell, Leaf, Utensils, Baby } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Home() {

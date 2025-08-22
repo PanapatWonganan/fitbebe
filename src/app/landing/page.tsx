@@ -5,25 +5,15 @@ import { motion } from 'framer-motion';
 import { 
   Heart, 
   Star, 
-  Clock, 
   Users, 
   CheckCircle, 
-  ArrowRight, 
   Play,
-  Award,
   Shield,
   Target,
-  Sparkles,
-  Baby,
   Crown,
-  Gift,
-  AlertTriangle,
-  MessageCircle,
-  Zap,
-  TrendingUp,
-  Calendar
+  AlertTriangle
 } from 'lucide-react';
-import Link from 'next/link';
+import Image from 'next/image';
 
 export default function LandingPage() {
   const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 45, seconds: 0 });
@@ -45,15 +35,6 @@ export default function LandingPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
-
-  // Testimonial rotation
-  useEffect(() => {
-    const testimonialTimer = setInterval(() => {
-      setCurrentTestimonial(prev => (prev + 1) % testimonials.length);
-    }, 5000);
-
-    return () => clearInterval(testimonialTimer);
   }, []);
 
   const testimonials = [
@@ -79,6 +60,15 @@ export default function LandingPage() {
       stars: 5
     }
   ];
+
+  // Testimonial rotation
+  useEffect(() => {
+    const testimonialTimer = setInterval(() => {
+      setCurrentTestimonial(prev => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => clearInterval(testimonialTimer);
+  }, [testimonials.length]);
 
   const stats = [
     { number: "15,000+", label: "คุณแม่ที่เปลี่ยนชีวิต" },
@@ -209,7 +199,7 @@ export default function LandingPage() {
                 <div className="flex items-center">
                   <div className="flex -space-x-2 mr-3">
                     {[1,2,3,4,5].map(i => (
-                      <img key={i} src={`https://randomuser.me/api/portraits/women/${i}.jpg`} className="w-8 h-8 rounded-full border-2 border-white" alt="" />
+                      <Image key={i} src={`https://randomuser.me/api/portraits/women/${i}.jpg`} width={32} height={32} className="w-8 h-8 rounded-full border-2 border-white" alt="User profile" />
                     ))}
                   </div>
                   <span className="text-gray-600">15,000+ คุณแม่ใช้แล้ว</span>
@@ -431,9 +421,11 @@ export default function LandingPage() {
             </blockquote>
             
             <div className="flex items-center justify-center mb-4">
-              <img 
+              <Image 
                 src={testimonials[currentTestimonial].image} 
                 alt={testimonials[currentTestimonial].name}
+                width={64}
+                height={64}
                 className="w-16 h-16 rounded-full mr-4"
               />
               <div className="text-left">

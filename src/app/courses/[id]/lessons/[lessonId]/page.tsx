@@ -3,9 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Play, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward, 
-  Baby, Heart, AlertTriangle, CheckCircle, ArrowLeft, ArrowRight,
-  Clock, Star, Award, Sparkles, Shield, Phone, Target
+  Play, Pause, Volume2, VolumeX, SkipBack, SkipForward, 
+  Baby, AlertTriangle, CheckCircle, ArrowLeft, ArrowRight,
+  Award, Sparkles, Shield, Target
 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -59,7 +59,6 @@ export default function LessonPage() {
   const [isMuted, setIsMuted] = useState(false);
   
   // Lesson State
-  const [showSafetyReminder, setShowSafetyReminder] = useState(false);
   const [pauseForBaby, setPauseForBaby] = useState(false);
   const [lessonCompleted, setLessonCompleted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -108,12 +107,6 @@ export default function LessonPage() {
     }
   };
 
-  const handleSeek = (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time;
-      setCurrentTime(time);
-    }
-  };
 
   const handleVolumeChange = (newVolume: number) => {
     if (videoRef.current) {

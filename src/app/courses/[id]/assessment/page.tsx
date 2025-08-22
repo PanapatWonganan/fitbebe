@@ -3,19 +3,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Stethoscope, 
   AlertTriangle, 
   CheckCircle, 
   ArrowLeft, 
   ArrowRight,
-  Heart,
-  Baby,
   Shield,
   FileText,
-  Clock,
-  Users,
   User,
-  Calendar,
   Activity
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
@@ -106,16 +100,6 @@ export default function HealthAssessment() {
     'อื่นๆ'
   ];
 
-  const conditions = [
-    'ไม่มีโรคประจำตัว',
-    'โรคหัวใจ',
-    'โรคปอด/หอบหืด',
-    'โรคไต',
-    'โรคตับ',
-    'โรคไทรอยด์',
-    'โรคเบาหวาน',
-    'อื่นๆ'
-  ];
 
   const currentSymptoms = [
     'ไม่มีอาการ',

@@ -6,15 +6,12 @@ import {
   CheckCircle, 
   AlertTriangle, 
   Heart, 
-  Droplets,
   Clock,
   Shield,
   Activity,
   User,
-  ArrowRight,
   ArrowLeft,
   Play,
-  Stethoscope,
   Phone
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';

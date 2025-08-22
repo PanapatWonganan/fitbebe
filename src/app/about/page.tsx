@@ -5,17 +5,13 @@ import { motion } from 'framer-motion';
 import { 
   Heart, 
   Users, 
-  Award, 
   Target, 
   Baby,
   Sparkles,
   Shield,
   BookOpen,
-  CheckCircle,
-  Smile,
   Star
 } from 'lucide-react';
-import Image from 'next/image';
 
 export default function About() {
   const values = [
