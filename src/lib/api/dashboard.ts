@@ -26,7 +26,7 @@ interface DashboardData {
 }
 
 export class DashboardAPI {
-  private baseURL = 'http://127.0.0.1:8001/api/v1'
+  private baseURL = 'https://boostme-backend-production.up.railway.app/api/v1'
 
   private async fetchWithAuth(endpoint: string, options: RequestInit = {}) {
     const token = localStorage.getItem('boostme_token')

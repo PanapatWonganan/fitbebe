@@ -1,6 +1,6 @@
 // Community Garden API Client for BoostMe Wellness Garden
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://boostme-backend-production.up.railway.app/api/v1'
 
 export interface PublicGarden {
   id: string

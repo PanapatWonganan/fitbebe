@@ -64,7 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return
       }
 
-      const response = await fetch('http://127.0.0.1:8001/api/v1/auth/me', {
+      const response = await fetch('https://boostme-backend-production.up.railway.app/api/v1/auth/me', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -90,7 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://127.0.0.1:8001/api/v1/auth/login', {
+      const response = await fetch('https://boostme-backend-production.up.railway.app/api/v1/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const token = localStorage.getItem('boostme_token')
       if (token) {
-        await fetch('http://127.0.0.1:8001/api/v1/auth/logout', {
+        await fetch('https://boostme-backend-production.up.railway.app/api/v1/auth/logout', {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
