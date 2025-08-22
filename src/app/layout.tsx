@@ -4,7 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { NotificationProvider } from "@/contexts/NotificationContext";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContextNew";
 import { GardenProvider } from "@/contexts/GardenContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import NotificationContainer from "@/components/NotificationContainer";
