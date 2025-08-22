@@ -117,7 +117,15 @@ class CourseIntegrationAPI {
    * Get user's learning progress with garden integration
    */
   async getLearningProgress(): Promise<LearningProgressResponse> {
-    const response = await fetch(`${this.baseUrl}/learning-progress`)
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
+    const response = await fetch(`${this.baseUrl}/learning-progress`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    })
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
@@ -130,7 +138,15 @@ class CourseIntegrationAPI {
    * Get course completion rewards preview
    */
   async getCourseRewardsPreview(courseId: string): Promise<CourseRewardsPreviewResponse> {
-    const response = await fetch(`${this.baseUrl}/courses/${courseId}/rewards-preview`)
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
+    const response = await fetch(`${this.baseUrl}/courses/${courseId}/rewards-preview`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    })
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)

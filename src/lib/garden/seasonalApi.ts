@@ -82,9 +82,13 @@ class SeasonalAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
     const url = `${API_BASE_URL}/garden/seasonal${endpoint}`
     
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
@@ -143,9 +147,15 @@ class SeasonalAPI {
       event_progress_contribution: number
     }
   }> {
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
     const response = await fetch(`${API_BASE_URL}/garden/seasonal/events/${eventId}/participate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
       body: JSON.stringify({
         activity_type: activityType,
         contribution_amount: contributionAmount
@@ -173,9 +183,15 @@ class SeasonalAPI {
     message: string
     plant: SeasonalPlant
   }> {
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
     const response = await fetch(`${API_BASE_URL}/garden/seasonal/plants/activate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
       body: JSON.stringify({
         plant_type: plantType,
         position: position

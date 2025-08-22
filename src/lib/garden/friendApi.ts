@@ -74,9 +74,13 @@ class FriendAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
     const url = `${API_BASE_URL}/garden/friends${endpoint}`
     
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,

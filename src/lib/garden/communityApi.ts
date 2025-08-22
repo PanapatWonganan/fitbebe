@@ -98,9 +98,13 @@ class CommunityAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
     const url = `${API_BASE_URL}/garden/community${endpoint}`
     
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
