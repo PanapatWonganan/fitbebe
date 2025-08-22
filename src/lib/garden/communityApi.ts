@@ -96,7 +96,7 @@ export interface LeaderboardEntry {
 
 class CommunityAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
-    const url = `${API_BASE_URL}/api/v1/garden/community${endpoint}`
+    const url = `${API_BASE_URL}/garden/community${endpoint}`
     
     const response = await fetch(url, {
       headers: {

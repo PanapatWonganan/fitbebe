@@ -80,7 +80,7 @@ export interface SeasonalPlant {
 
 class SeasonalAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
-    const url = `${API_BASE_URL}/api/v1/garden/seasonal${endpoint}`
+    const url = `${API_BASE_URL}/garden/seasonal${endpoint}`
     
     const response = await fetch(url, {
       headers: {
@@ -143,7 +143,7 @@ class SeasonalAPI {
       event_progress_contribution: number
     }
   }> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/garden/seasonal/events/${eventId}/participate`, {
+    const response = await fetch(`${API_BASE_URL}/garden/seasonal/events/${eventId}/participate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -173,7 +173,7 @@ class SeasonalAPI {
     message: string
     plant: SeasonalPlant
   }> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/garden/seasonal/plants/activate`, {
+    const response = await fetch(`${API_BASE_URL}/garden/seasonal/plants/activate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

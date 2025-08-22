@@ -72,7 +72,7 @@ export interface FriendGarden {
 
 class FriendAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
-    const url = `${API_BASE_URL}/api/v1/garden/friends${endpoint}`
+    const url = `${API_BASE_URL}/garden/friends${endpoint}`
     
     const response = await fetch(url, {
       headers: {

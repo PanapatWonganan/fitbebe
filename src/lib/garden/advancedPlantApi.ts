@@ -67,7 +67,7 @@ export interface BreedingResult {
 
 class AdvancedPlantAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
-    const url = `${API_BASE_URL}/api/v1/garden/advanced-plants${endpoint}`
+    const url = `${API_BASE_URL}/garden/advanced-plants${endpoint}`
     
     const response = await fetch(url, {
       headers: {
@@ -100,7 +100,7 @@ class AdvancedPlantAPI {
     message: string
     data: AbilityActivationResult
   }> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/garden/advanced-plants/${plantId}/activate-ability`, {
+    const response = await fetch(`${API_BASE_URL}/garden/advanced-plants/${plantId}/activate-ability`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ability_type: abilityType }),
@@ -124,7 +124,7 @@ class AdvancedPlantAPI {
     message: string
     evolution_result: any
   }> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/garden/advanced-plants/${plantId}/evolve`, {
+    const response = await fetch(`${API_BASE_URL}/garden/advanced-plants/${plantId}/evolve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -147,7 +147,7 @@ class AdvancedPlantAPI {
     message: string
     breeding_result: BreedingResult
   }> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/garden/advanced-plants/breed`, {
+    const response = await fetch(`${API_BASE_URL}/garden/advanced-plants/breed`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

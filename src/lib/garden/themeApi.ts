@@ -57,7 +57,7 @@ export interface CurrentThemeDetails {
 
 class ThemeAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
-    const url = `${API_BASE_URL}/api/v1/garden/themes${endpoint}`
+    const url = `${API_BASE_URL}/garden/themes${endpoint}`
     
     const response = await fetch(url, {
       headers: {

@@ -12,7 +12,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://boostme-backend
 
 class GardenAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
-    const url = `${API_BASE_URL}/api/v1/garden${endpoint}`
+    const url = `${API_BASE_URL}/garden${endpoint}`
     
     const response = await fetch(url, {
       headers: {
