@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextNew'
 import { Eye, EyeOff, Lock, Mail, User, Phone, Users } from 'lucide-react'
 
 interface RegisterFormProps {

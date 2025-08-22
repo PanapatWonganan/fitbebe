@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Menu, X, Heart, User, ShoppingCart, Bell, LogOut } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContextNew";
 import { useNotificationHelpers, useNotification } from "@/contexts/NotificationContext";
 
 export function Header() {

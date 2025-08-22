@@ -19,7 +19,7 @@ import {
   BookOpen
 } from 'lucide-react'
 
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextNew'
 import { useGarden } from '@/contexts/GardenContext'
 import { useNotification } from '@/contexts/NotificationContext'
 import XPProgressBar, { XPGainAnimation, LevelUpAnimation } from '@/components/garden/XPProgressBar'
