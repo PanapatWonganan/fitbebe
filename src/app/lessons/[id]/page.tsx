@@ -269,7 +269,7 @@ export default function LessonPage() {
               className="bg-white rounded-lg shadow-lg overflow-hidden"
             >
               {/* Video Status Messages */}
-              {!lesson.video && (
+              {!lesson.video && !lesson.video_url && (
                 <div className="aspect-video bg-gray-100 flex items-center justify-center">
                   <div className="text-center text-gray-500">
                     <PlayCircle className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -278,7 +278,7 @@ export default function LessonPage() {
                 </div>
               )}
 
-              {lesson.video && isVideoProcessing && (
+              {!lesson.video_url && lesson.video && isVideoProcessing && (
                 <div className="aspect-video bg-blue-50 flex items-center justify-center">
                   <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-blue-600" />
@@ -288,7 +288,7 @@ export default function LessonPage() {
                 </div>
               )}
 
-              {lesson.video && hasVideoError && (
+              {!lesson.video_url && lesson.video && hasVideoError && (
                 <div className="aspect-video bg-red-50 flex items-center justify-center">
                   <div className="text-center">
                     <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-600" />
@@ -300,7 +300,7 @@ export default function LessonPage() {
                 </div>
               )}
 
-              {!lesson.can_watch && lesson.video?.ready && (
+              {!lesson.video_url && !lesson.can_watch && lesson.video?.ready && (
                 <div className="aspect-video bg-yellow-50 flex items-center justify-center">
                   <div className="text-center">
                     <Eye className="w-12 h-12 mx-auto mb-4 text-yellow-600" />
@@ -312,7 +312,14 @@ export default function LessonPage() {
                 </div>
               )}
 
-              {/* YouTube/External Video Player */}
+              {/* Notice when both YouTube and uploaded video exist */}
+              {lesson.video_url && lesson.video?.ready && lesson.can_watch && (
+                <div className="bg-blue-50 border border-blue-200 p-2 mb-2 rounded text-sm text-blue-700">
+                  <p>💡 บทเรียนนี้มีทั้งวิดีโอ YouTube และวิดีโอที่อัปโหลด กำลังแสดงวิดีโอ YouTube</p>
+                </div>
+              )}
+
+              {/* Priority 1: YouTube/External Video Player */}
               {lesson.video_url && lesson.can_watch && (
                 <div className="aspect-video bg-black">
                   {lesson.video_url.includes('youtube.com') || lesson.video_url.includes('youtu.be') ? (
@@ -351,7 +358,7 @@ export default function LessonPage() {
                 </div>
               )}
 
-              {/* Secure Video Player for uploaded files */}
+              {/* Priority 2: Secure Video Player for uploaded files (only show if no YouTube URL) */}
               {!lesson.video_url && canWatchVideo && !streamData && (
                 <div className="aspect-video bg-gray-900 flex items-center justify-center">
                   <button
@@ -387,8 +394,8 @@ export default function LessonPage() {
               )}
 
 
-              {/* Secure Video Player */}
-              {streamData && (
+              {/* Secure Video Player - Show when stream URL is loaded (only if no YouTube URL) */}
+              {!lesson.video_url && streamData && (
                 <>
                   {console.log('🎥 Rendering WorkingSecureVideoPlayer with streamData:', {
                     streamUrl: streamData.stream_url,
