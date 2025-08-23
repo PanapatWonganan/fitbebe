@@ -132,11 +132,15 @@ export interface LessonDetail {
 
 export async function fetchLessonDetail(lessonId: string): Promise<ApiResponse<LessonDetail>> {
   try {
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
     const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
       },
       cache: 'no-store',
     });
@@ -171,11 +175,15 @@ export interface StreamUrlResponse {
 
 export async function fetchStreamUrl(lessonId: string): Promise<ApiResponse<StreamUrlResponse>> {
   try {
+    // Get auth token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
     const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}/stream-url`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
       },
       cache: 'no-store',
     });

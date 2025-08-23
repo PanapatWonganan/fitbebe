@@ -99,14 +99,29 @@ export default function LessonPage() {
 
   // Fetch stream URL when lesson is ready
   const getStreamUrl = async () => {
-    if (!lesson?.video?.ready || !lesson.can_watch) return;
+    if (!lesson?.video?.ready || !lesson.can_watch) {
+      console.error('Cannot get stream URL:', { 
+        videoReady: lesson?.video?.ready, 
+        canWatch: lesson?.can_watch 
+      });
+      return;
+    }
 
     setStreamLoading(true);
+    console.log('Fetching stream URL for lesson:', lessonId);
+    
     const result = await fetchStreamUrl(lessonId);
+    console.log('Stream URL result:', result);
     
     if (result.error) {
+      console.error('Stream URL error:', result.error);
       setError(result.error);
     } else if (result.data) {
+      console.log('Stream URL data received:', {
+        streamUrl: result.data.stream_url,
+        expiresAt: result.data.expires_at,
+        videoId: result.data.video?.id
+      });
       setStreamData(result.data);
     }
     

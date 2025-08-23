@@ -27,6 +27,7 @@ export default function WorkingSecureVideoPlayer({
   const [duration, setDuration] = useState(0);
 
   console.log('🔐 WorkingSecureVideoPlayer: Rendering with URL:', streamUrl);
+  console.log('🔐 WorkingSecureVideoPlayer: URL type:', typeof streamUrl, 'URL valid:', streamUrl && streamUrl.length > 0);
   console.log('🔐 WorkingSecureVideoPlayer: State:', { isPlaying, isMuted, currentTime, duration });
 
   useEffect(() => {
@@ -38,6 +39,14 @@ export default function WorkingSecureVideoPlayer({
       // ป้องกัน video reset โดยตรวจสอบ source ก่อน
       if (video.src !== streamUrl) {
         console.log('🔐 WorkingSecureVideoPlayer: Setting new video source');
+        console.log('🔐 WorkingSecureVideoPlayer: Stream URL details:', {
+          url: streamUrl,
+          urlLength: streamUrl?.length,
+          urlStartsWith: streamUrl?.substring(0, 50),
+          isValidUrl: streamUrl?.startsWith('http'),
+          includesToken: streamUrl?.includes('token='),
+          includesExpires: streamUrl?.includes('expires=')
+        });
         video.src = streamUrl;
         video.preload = 'metadata';
       } else {
@@ -78,7 +87,17 @@ export default function WorkingSecureVideoPlayer({
       video.addEventListener('pause', () => setIsPlaying(false));
       
       video.addEventListener('error', (e) => {
-        console.error('🔐 WorkingSecureVideoPlayer: Error:', e);
+        const videoElement = e.target as HTMLVideoElement;
+        console.error('🔐 WorkingSecureVideoPlayer: Video Error Details:', {
+          error: videoElement.error,
+          errorCode: videoElement.error?.code,
+          errorMessage: videoElement.error?.message,
+          src: videoElement.src,
+          currentSrc: videoElement.currentSrc,
+          networkState: videoElement.networkState,
+          readyState: videoElement.readyState,
+          event: e
+        });
       });
     } else {
       console.error('🔐 WorkingSecureVideoPlayer: ❌ Video element is null');
