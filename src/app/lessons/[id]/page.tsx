@@ -213,6 +213,7 @@ export default function LessonPage() {
 
   const canWatchVideo = lesson.can_watch && lesson.video?.ready;
   const isVideoProcessing = lesson.video?.status === 'processing';
+  const isVideoPending = lesson.video?.status === 'pending';  
   const hasVideoError = lesson.video?.status === 'failed';
 
   return (
@@ -278,11 +279,13 @@ export default function LessonPage() {
                 </div>
               )}
 
-              {!lesson.video_url && lesson.video && isVideoProcessing && (
+              {!lesson.video_url && lesson.video && (isVideoProcessing || isVideoPending) && (
                 <div className="aspect-video bg-blue-50 flex items-center justify-center">
                   <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-blue-600" />
-                    <p className="text-blue-800 font-medium">กำลังประมวลผลวิดีโอ...</p>
+                    <p className="text-blue-800 font-medium">
+                      {isVideoPending ? 'กำลังรอการประมวลผลวิดีโอ...' : 'กำลังประมวลผลวิดีโอ...'}
+                    </p>
                     <p className="text-blue-600 text-sm">กรุณารอสักครู่</p>
                   </div>
                 </div>
