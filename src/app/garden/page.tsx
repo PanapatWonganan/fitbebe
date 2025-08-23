@@ -267,17 +267,23 @@ const GardenDashboard = () => {
               </h3>
 
               {/* Water Garden Button */}
-              {plantsNeedingWater.length > 0 && (
-                <motion.button
-                  onClick={handleWaterGarden}
-                  disabled={isWatering}
-                  className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white py-3 px-4 rounded-xl font-medium flex items-center justify-center space-x-2 transition-colors"
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Droplets className="w-5 h-5" />
-                  <span>รดน้ำสวน ({plantsNeedingWater.length})</span>
-                </motion.button>
-              )}
+              {/* Water Garden - Always show button */}
+              <motion.button
+                onClick={handleWaterGarden}
+                disabled={isWatering}
+                className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white py-3 px-4 rounded-xl font-medium flex items-center justify-center space-x-2 transition-colors"
+                whileTap={{ scale: 0.98 }}
+              >
+                <Droplets className="w-5 h-5" />
+                <span>
+                  {isWatering 
+                    ? 'กำลังรดน้ำ...' 
+                    : plantsNeedingWater.length > 0 
+                      ? `รดน้ำสวน (${plantsNeedingWater.length})` 
+                      : 'รดน้ำสวน'
+                  }
+                </span>
+              </motion.button>
 
               {/* Plant New Seed */}
               <motion.button
