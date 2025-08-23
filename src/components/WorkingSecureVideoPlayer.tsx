@@ -27,7 +27,15 @@ export default function WorkingSecureVideoPlayer({
   const [duration, setDuration] = useState(0);
 
   console.log('🔐 WorkingSecureVideoPlayer: Rendering with URL:', streamUrl);
-  console.log('🔐 WorkingSecureVideoPlayer: URL type:', typeof streamUrl, 'URL valid:', streamUrl && streamUrl.length > 0);
+  console.log('🔐 WorkingSecureVideoPlayer: URL details:', {
+    url: streamUrl,
+    urlType: typeof streamUrl,
+    urlLength: streamUrl?.length,
+    urlStartsWith: streamUrl?.substring(0, 100),
+    isValidHttpUrl: streamUrl?.startsWith('http'),
+    includesMP4: streamUrl?.includes('.mp4'),
+    includesM3U8: streamUrl?.includes('.m3u8')
+  });
   console.log('🔐 WorkingSecureVideoPlayer: State:', { isPlaying, isMuted, currentTime, duration });
 
   useEffect(() => {
@@ -37,6 +45,17 @@ export default function WorkingSecureVideoPlayer({
       const video = videoRef.current;
       
       // ป้องกัน video reset โดยตรวจสอบ source ก่อน
+      if (!streamUrl || streamUrl.length === 0) {
+        console.error('🔐 WorkingSecureVideoPlayer: ❌ Invalid or empty stream URL');
+        return;
+      }
+
+      // Check if URL is valid
+      if (!streamUrl.startsWith('http://') && !streamUrl.startsWith('https://')) {
+        console.error('🔐 WorkingSecureVideoPlayer: ❌ Invalid URL format:', streamUrl);
+        return;
+      }
+
       if (video.src !== streamUrl) {
         console.log('🔐 WorkingSecureVideoPlayer: Setting new video source');
         console.log('🔐 WorkingSecureVideoPlayer: Stream URL details:', {
@@ -47,8 +66,17 @@ export default function WorkingSecureVideoPlayer({
           includesToken: streamUrl?.includes('token='),
           includesExpires: streamUrl?.includes('expires=')
         });
+        
+        // Clear existing source first
+        video.src = '';
+        video.load();
+        
+        // Set new source
         video.src = streamUrl;
         video.preload = 'metadata';
+        
+        // Force load the video
+        video.load();
       } else {
         console.log('🔐 WorkingSecureVideoPlayer: Video source unchanged, skipping reset');
         return; // ข้ามการ setup ใหม่
@@ -88,16 +116,32 @@ export default function WorkingSecureVideoPlayer({
       
       video.addEventListener('error', (e) => {
         const videoElement = e.target as HTMLVideoElement;
+        const errorMessages: { [key: number]: string } = {
+          1: 'MEDIA_ERR_ABORTED - The user aborted the video playback',
+          2: 'MEDIA_ERR_NETWORK - A network error occurred while fetching the video',
+          3: 'MEDIA_ERR_DECODE - An error occurred while decoding the video',
+          4: 'MEDIA_ERR_SRC_NOT_SUPPORTED - The video format is not supported'
+        };
+        
+        const errorCode = videoElement.error?.code || 0;
+        const errorMsg = errorMessages[errorCode] || 'Unknown error';
+        
+        console.error('🔐 WorkingSecureVideoPlayer: ❌ Video Error:', errorMsg);
         console.error('🔐 WorkingSecureVideoPlayer: Video Error Details:', {
           error: videoElement.error,
-          errorCode: videoElement.error?.code,
+          errorCode: errorCode,
           errorMessage: videoElement.error?.message,
+          errorDescription: errorMsg,
           src: videoElement.src,
           currentSrc: videoElement.currentSrc,
           networkState: videoElement.networkState,
           readyState: videoElement.readyState,
+          streamUrlProvided: streamUrl,
           event: e
         });
+        
+        // Show user-friendly error
+        alert(`Video playback error: ${errorMsg}\n\nPlease check if the video URL is correct and accessible.`);
       });
     } else {
       console.error('🔐 WorkingSecureVideoPlayer: ❌ Video element is null');

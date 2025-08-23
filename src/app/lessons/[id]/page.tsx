@@ -389,13 +389,22 @@ export default function LessonPage() {
 
               {/* Secure Video Player */}
               {streamData && (
-                <WorkingSecureVideoPlayer
-                  streamUrl={streamData.stream_url}
-                  title={lesson.title}
-                  userName="นักเรียน BoostMe" // TODO: Get from auth context
-                  userEmail="student@boostme.com" // TODO: Get from auth context
-                  onProgress={handleProgress}
-                />
+                <>
+                  {console.log('🎥 Rendering WorkingSecureVideoPlayer with streamData:', {
+                    streamUrl: streamData.stream_url,
+                    urlLength: streamData.stream_url?.length,
+                    urlPreview: streamData.stream_url?.substring(0, 100),
+                    expiresAt: streamData.expires_at,
+                    videoId: streamData.video?.id
+                  })}
+                  <WorkingSecureVideoPlayer
+                    streamUrl={streamData.stream_url || ''}
+                    title={lesson.title}
+                    userName="นักเรียน BoostMe" // TODO: Get from auth context
+                    userEmail="student@boostme.com" // TODO: Get from auth context
+                    onProgress={handleProgress}
+                  />
+                </>
               )}
             </motion.div>
           </div>
