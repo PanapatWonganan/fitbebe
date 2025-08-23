@@ -165,22 +165,41 @@ const PlantComponent: React.FC<PlantComponentProps> = ({
           )}
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - Always show water button for better UX */}
         <AnimatePresence>
-          {(plant.needs_watering || plant.can_harvest) && (
+          {(onWater || plant.can_harvest) && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               className="absolute -top-2 -right-2 flex flex-col space-y-1"
             >
-              {plant.needs_watering && onWater && (
+              {onWater && (
                 <motion.button
-                  className={`${sizeClass.button} bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg`}
+                  className={`
+                    ${sizeClass.button} rounded-full flex items-center justify-center shadow-lg transition-all
+                    ${plant.needs_watering 
+                      ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                      : 'bg-blue-100 hover:bg-blue-200 text-blue-500 border border-blue-300'
+                    }
+                  `}
                   onClick={handleWater}
                   disabled={isWatering}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
+                  animate={plant.needs_watering ? { 
+                    scale: [1, 1.2, 1],
+                    boxShadow: [
+                      '0 4px 6px rgba(0, 0, 0, 0.1)',
+                      '0 8px 15px rgba(59, 130, 246, 0.4)', 
+                      '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    ]
+                  } : {}}
+                  transition={{ 
+                    duration: plant.needs_watering ? 2 : 0.3,
+                    repeat: plant.needs_watering ? Infinity : 0,
+                    ease: "easeInOut"
+                  }}
                 >
                   {isWatering ? (
                     <motion.div
