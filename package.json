@@ -17,6 +17,7 @@
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.11",
+    "hls.js": "^1.6.10",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.530.0",
     "mysql2": "^3.11.5",

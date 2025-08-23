@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import Hls from 'hls.js';
 
 interface WorkingSecureVideoPlayerProps {
   streamUrl: string;
@@ -20,6 +21,7 @@ export default function WorkingSecureVideoPlayer({
 }: WorkingSecureVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const hlsRef = useRef<Hls | null>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -56,30 +58,90 @@ export default function WorkingSecureVideoPlayer({
         return;
       }
 
-      if (video.src !== streamUrl) {
-        console.log('🔐 WorkingSecureVideoPlayer: Setting new video source');
-        console.log('🔐 WorkingSecureVideoPlayer: Stream URL details:', {
-          url: streamUrl,
-          urlLength: streamUrl?.length,
-          urlStartsWith: streamUrl?.substring(0, 50),
-          isValidUrl: streamUrl?.startsWith('http'),
-          includesToken: streamUrl?.includes('token='),
-          includesExpires: streamUrl?.includes('expires=')
-        });
+      // Clean up existing HLS instance
+      if (hlsRef.current) {
+        console.log('🔐 WorkingSecureVideoPlayer: Cleaning up existing HLS instance');
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+
+      // Check if it's an HLS stream (.m3u8)
+      if (streamUrl.includes('.m3u8') || streamUrl.includes('/playlist/')) {
+        console.log('🔐 WorkingSecureVideoPlayer: Detected HLS stream, using HLS.js');
         
-        // Clear existing source first
-        video.src = '';
-        video.load();
-        
-        // Set new source
-        video.src = streamUrl;
-        video.preload = 'metadata';
-        
-        // Force load the video
-        video.load();
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: false,
+            backBufferLength: 90
+          });
+          
+          hlsRef.current = hls;
+          
+          hls.on(Hls.Events.ERROR, (event, data) => {
+            console.error('🔐 HLS Error:', event, data);
+            if (data.fatal) {
+              switch (data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  console.error('🔐 Fatal network error encountered, trying to recover');
+                  hls.startLoad();
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  console.error('🔐 Fatal media error encountered, trying to recover');
+                  hls.recoverMediaError();
+                  break;
+                default:
+                  console.error('🔐 Fatal error, cannot recover');
+                  hls.destroy();
+                  break;
+              }
+            }
+          });
+          
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            console.log('🔐 HLS manifest loaded, ready to play');
+          });
+          
+          hls.loadSource(streamUrl);
+          hls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          // For Safari native HLS support
+          console.log('🔐 WorkingSecureVideoPlayer: Using native HLS support (Safari)');
+          video.src = streamUrl;
+          video.load();
+        } else {
+          console.error('🔐 WorkingSecureVideoPlayer: HLS is not supported in this browser');
+          alert('Your browser does not support HLS video streaming');
+          return;
+        }
       } else {
-        console.log('🔐 WorkingSecureVideoPlayer: Video source unchanged, skipping reset');
-        return; // ข้ามการ setup ใหม่
+        // Regular video file (MP4, etc.)
+        console.log('🔐 WorkingSecureVideoPlayer: Setting regular video source (non-HLS)');
+        
+        if (video.src !== streamUrl) {
+          console.log('🔐 WorkingSecureVideoPlayer: Stream URL details:', {
+            url: streamUrl,
+            urlLength: streamUrl?.length,
+            urlStartsWith: streamUrl?.substring(0, 50),
+            isValidUrl: streamUrl?.startsWith('http'),
+            includesToken: streamUrl?.includes('token='),
+            includesExpires: streamUrl?.includes('expires=')
+          });
+          
+          // Clear existing source first
+          video.src = '';
+          video.load();
+          
+          // Set new source
+          video.src = streamUrl;
+          video.preload = 'metadata';
+          
+          // Force load the video
+          video.load();
+        } else {
+          console.log('🔐 WorkingSecureVideoPlayer: Video source unchanged, skipping reset');
+          return;
+        }
       }
       
       console.log('🔐 WorkingSecureVideoPlayer: Video element found, setting up security');
@@ -146,6 +208,15 @@ export default function WorkingSecureVideoPlayer({
     } else {
       console.error('🔐 WorkingSecureVideoPlayer: ❌ Video element is null');
     }
+    
+    // Cleanup on unmount
+    return () => {
+      if (hlsRef.current) {
+        console.log('🔐 WorkingSecureVideoPlayer: Cleaning up HLS on unmount');
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+    };
   }, [streamUrl]); // ลบ onProgress ออกเพื่อป้องกัน re-render
 
   // Security: Prevent right-click and keyboard shortcuts (but don't block video controls)
