@@ -81,11 +81,24 @@ export default function LessonPage() {
   // Fetch lesson data
   useEffect(() => {
     const loadLesson = async () => {
+      console.log('📚 Loading lesson details for ID:', lessonId);
       const result = await fetchLessonDetail(lessonId);
+      console.log('📚 Lesson detail API response:', result);
       
       if (result.error) {
+        console.error('❌ Error loading lesson:', result.error);
         setError(result.error);
       } else if (result.data) {
+        console.log('✅ Lesson data loaded:', {
+          id: result.data.id,
+          title: result.data.title,
+          canWatch: result.data.can_watch,
+          hasVideo: !!result.data.video,
+          videoStatus: result.data.video?.status,
+          videoReady: result.data.video?.ready,
+          hasVideoUrl: !!result.data.video_url,
+          videoUrl: result.data.video_url
+        });
         setLesson(result.data);
       }
       
@@ -99,30 +112,51 @@ export default function LessonPage() {
 
   // Fetch stream URL when lesson is ready
   const getStreamUrl = async () => {
+    console.log('🎬 getStreamUrl called with lesson:', {
+      lessonId,
+      videoReady: lesson?.video?.ready,
+      canWatch: lesson?.can_watch,
+      videoStatus: lesson?.video?.status,
+      hasVideo: !!lesson?.video,
+      hasVideoUrl: !!lesson?.video_url
+    });
+
     if (!lesson?.video?.ready || !lesson.can_watch) {
-      console.error('Cannot get stream URL:', { 
+      console.error('❌ Cannot get stream URL - requirements not met:', { 
         videoReady: lesson?.video?.ready, 
-        canWatch: lesson?.can_watch 
+        canWatch: lesson?.can_watch,
+        videoStatus: lesson?.video?.status
       });
+      alert(`Cannot play video: ${!lesson?.video?.ready ? 'Video not ready' : 'No permission to watch'}`);
       return;
     }
 
     setStreamLoading(true);
-    console.log('Fetching stream URL for lesson:', lessonId);
+    console.log('📡 Fetching stream URL for lesson:', lessonId);
     
-    const result = await fetchStreamUrl(lessonId);
-    console.log('Stream URL result:', result);
-    
-    if (result.error) {
-      console.error('Stream URL error:', result.error);
-      setError(result.error);
-    } else if (result.data) {
-      console.log('Stream URL data received:', {
-        streamUrl: result.data.stream_url,
-        expiresAt: result.data.expires_at,
-        videoId: result.data.video?.id
-      });
-      setStreamData(result.data);
+    try {
+      const result = await fetchStreamUrl(lessonId);
+      console.log('📦 Stream URL API response:', result);
+      
+      if (result.error) {
+        console.error('❌ Stream URL error:', result.error);
+        setError(result.error);
+        alert(`Error loading video: ${result.error}`);
+      } else if (result.data) {
+        console.log('✅ Stream URL data received:', {
+          streamUrl: result.data.stream_url,
+          expiresAt: result.data.expires_at,
+          videoId: result.data.video?.id,
+          urlLength: result.data.stream_url?.length
+        });
+        setStreamData(result.data);
+      } else {
+        console.error('❌ No data or error in response');
+        alert('Failed to load video: No data received');
+      }
+    } catch (error) {
+      console.error('❌ Exception while fetching stream URL:', error);
+      alert(`Failed to load video: ${error}`);
     }
     
     setStreamLoading(false);
@@ -321,9 +355,21 @@ export default function LessonPage() {
               {!lesson.video_url && canWatchVideo && !streamData && (
                 <div className="aspect-video bg-gray-900 flex items-center justify-center">
                   <button
-                    onClick={getStreamUrl}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('🔴 Play button clicked!', {
+                        canWatchVideo,
+                        streamData,
+                        streamLoading,
+                        lessonVideoUrl: lesson.video_url,
+                        videoReady: lesson?.video?.ready
+                      });
+                      getStreamUrl();
+                    }}
                     disabled={streamLoading}
-                    className="bg-pink-600 text-white px-8 py-4 rounded-lg hover:bg-pink-700 disabled:opacity-50 flex items-center"
+                    className="bg-pink-600 text-white px-8 py-4 rounded-lg hover:bg-pink-700 disabled:opacity-50 flex items-center cursor-pointer"
+                    style={{ pointerEvents: streamLoading ? 'none' : 'auto' }}
                   >
                     {streamLoading ? (
                       <>
