@@ -10,12 +10,27 @@ import {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://boostme-backend-production.up.railway.app/api/v1'
 
+// Utility function to get auth token
+export const getAuthToken = (): string | null => {
+  if (typeof window === 'undefined') return null
+  
+  // Try multiple token keys for backward compatibility
+  const possibleKeys = ['boostme_token', 'auth_token']
+  
+  for (const key of possibleKeys) {
+    const token = localStorage.getItem(key)
+    if (token) return token
+  }
+  
+  return null
+}
+
 class GardenAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
     const url = `${API_BASE_URL}/garden${endpoint}`
     
-    // Get auth token from localStorage
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    // Get auth token using utility function
+    const token = getAuthToken()
     
     const response = await fetch(url, {
       headers: {

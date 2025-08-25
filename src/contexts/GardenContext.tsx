@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { gardenAPI } from '@/lib/garden/api'
+import { useAuth } from '@/contexts/AuthContext'
 import { 
   GardenData, 
   PlantType, 
@@ -25,6 +26,7 @@ interface GardenContextType {
   
   // Actions
   refreshGarden: () => Promise<void>
+  clearGardenData: () => void
   plantSeed: (plantTypeId: string, options?: { custom_name?: string; position?: { x: number; y: number } }) => Promise<void>
   waterPlant: (userPlantId: string) => Promise<void>
   harvestPlant: (userPlantId: string) => Promise<void>
@@ -52,6 +54,8 @@ interface GardenProviderProps {
 }
 
 export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
+  const { user, isAuthenticated } = useAuth()
+  
   const [gardenData, setGardenData] = useState<GardenData | null>(null)
   const [plantTypes, setPlantTypes] = useState<PlantType[]>([])
   const [achievements, setAchievements] = useState<{ [category: string]: Achievement[] }>({})
@@ -62,8 +66,23 @@ export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
   const [isWatering, setIsWatering] = useState(false)
   const [isHarvesting, setIsHarvesting] = useState(false)
 
+  // Clear all garden data
+  const clearGardenData = () => {
+    setGardenData(null)
+    setPlantTypes([])
+    setAchievements({})
+    setTodayChallenges([])
+    setIsLoading(false)
+  }
+
   // Initialize garden data
   const initializeGarden = async () => {
+    // Don't load garden data if user is not authenticated
+    if (!isAuthenticated || !user) {
+      clearGardenData()
+      return
+    }
+
     try {
       setIsLoading(true)
       
@@ -73,7 +92,12 @@ export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
         setGardenData(gardenData)
       } catch (error) {
         console.error('Failed to load garden data:', error)
-        // Set mock data for development
+        // If auth failed, clear data
+        if (error?.message?.includes('401') || error?.message?.includes('Authentication')) {
+          clearGardenData()
+          return
+        }
+        // Set mock data for other errors
         setGardenData({
           garden: {
             id: 'demo',
@@ -288,10 +312,17 @@ export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
     return gardenData.garden.star_seeds >= cost
   }
 
-  // Initialize on mount
+  // Initialize on mount and when user changes
   useEffect(() => {
     initializeGarden()
-  }, [])
+  }, [user, isAuthenticated])
+
+  // Clear data when user logs out
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      clearGardenData()
+    }
+  }, [isAuthenticated, user])
 
   const value: GardenContextType = {
     // State
@@ -308,6 +339,7 @@ export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
     
     // Actions
     refreshGarden,
+    clearGardenData,
     plantSeed,
     waterPlant,
     harvestPlant,

@@ -1,4 +1,5 @@
 // Advanced Plant System API Client for BoostMe Wellness Garden
+import { getAuthToken } from './api'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://boostme-backend-production.up.railway.app/api/v1'
 
@@ -69,8 +70,8 @@ class AdvancedPlantAPI {
   private async fetch(endpoint: string, options: RequestInit = {}) {
     const url = `${API_BASE_URL}/garden/advanced-plants${endpoint}`
     
-    // Get auth token from localStorage
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    // Get auth token using utility function
+    const token = getAuthToken()
     
     const response = await fetch(url, {
       headers: {
