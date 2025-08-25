@@ -199,11 +199,26 @@ export default function WorkingSecureVideoPlayer({
           networkState: videoElement.networkState,
           readyState: videoElement.readyState,
           streamUrlProvided: streamUrl,
+          isHLSStream: streamUrl?.includes('.m3u8'),
+          urlContainsToken: streamUrl?.includes('token='),
           event: e
         });
         
-        // Show user-friendly error
-        alert(`Video playback error: ${errorMsg}\n\nPlease check if the video URL is correct and accessible.`);
+        // Improved user-friendly error based on error type
+        let userMessage = 'เกิดข้อผิดพลาดในการเล่นวิดีโอ';
+        
+        switch (errorCode) {
+          case 2:
+            userMessage = 'ไม่สามารถโหลดวิดีโอได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต';
+            break;
+          case 4:
+            userMessage = 'รูปแบบวิดีโอไม่ได้รับการสนับสนุน กรุณาลองใช้เบราว์เซอร์อื่น';
+            break;
+          default:
+            userMessage = 'เกิดข้อผิดพลาดในการเล่นวิดีโอ กรุณาลองรีเฟรชหน้าเว็บ';
+        }
+        
+        alert(userMessage);
       });
     } else {
       console.error('🔐 WorkingSecureVideoPlayer: ❌ Video element is null');
