@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { AuthProvider } from "@/contexts/AuthContextNew";
-import { GardenProvider } from "@/contexts/GardenContext";
+import { SafeGardenProvider } from "@/contexts/SafeGardenProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import NotificationContainer from "@/components/NotificationContainer";
 
@@ -71,7 +71,7 @@ export default function RootLayout({
       <body className={`${kanit.className} antialiased transition-colors duration-300`}>
         <NotificationProvider>
           <AuthProvider>
-            <GardenProvider>
+            <SafeGardenProvider>
               <ErrorBoundary>
                 <div className="min-h-screen flex flex-col bg-white">
                   <Header />
@@ -80,7 +80,7 @@ export default function RootLayout({
                   <NotificationContainer />
                 </div>
               </ErrorBoundary>
-            </GardenProvider>
+            </SafeGardenProvider>
           </AuthProvider>
         </NotificationProvider>
       </body>
