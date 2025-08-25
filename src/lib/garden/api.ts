@@ -31,6 +31,7 @@ class GardenAPI {
     
     // Get auth token using utility function
     const token = getAuthToken()
+    console.log('🔑 Garden API call:', { endpoint, hasToken: !!token, tokenPrefix: token?.substring(0, 10) + '...' })
     
     const response = await fetch(url, {
       headers: {
@@ -43,11 +44,15 @@ class GardenAPI {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}))
+      console.error('❌ Garden API error:', { status: response.status, error })
       throw new Error(error.message || `HTTP error! status: ${response.status}`)
     }
 
     const data = await response.json()
+    console.log('✅ Garden API response:', { endpoint, success: data.success })
+    
     if (!data.success) {
+      console.error('❌ Garden API failed:', data.message)
       throw new Error(data.message || 'API request failed')
     }
 

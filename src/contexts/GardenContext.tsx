@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { gardenAPI } from '@/lib/garden/api'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextNew'
 import { 
   GardenData, 
   PlantType, 
@@ -92,8 +92,11 @@ export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
 
   // Initialize garden data
   const initializeGarden = async () => {
-    // Don't load garden data if user is not authenticated
-    if (!isAuthenticated || !user) {
+    console.log('🌱 initializeGarden called:', { isClient, isAuthenticated, user: user?.email })
+    
+    // Don't load garden data if user is not authenticated or not on client
+    if (!isClient || !isAuthenticated || !user) {
+      console.log('🚫 Not loading garden:', { isClient, isAuthenticated, hasUser: !!user })
       clearGardenData()
       return
     }
@@ -103,10 +106,12 @@ export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
       
       // Load garden data first (most important)
       try {
+        console.log('🌱 Calling gardenAPI.getMyGarden()')
         const gardenData = await gardenAPI.getMyGarden()
+        console.log('✅ Garden data loaded:', gardenData)
         setGardenData(gardenData)
       } catch (error) {
-        console.error('Failed to load garden data:', error)
+        console.error('❌ Failed to load garden data:', error)
         // If auth failed, clear data
         if (error?.message?.includes('401') || error?.message?.includes('Authentication')) {
           clearGardenData()
