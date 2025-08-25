@@ -54,7 +54,18 @@ interface GardenProviderProps {
 }
 
 export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
-  const { user, isAuthenticated } = useAuth()
+  // Safely get auth context with fallback for SSR/prerender
+  let user = null
+  let isAuthenticated = false
+  
+  try {
+    const authContext = useAuth()
+    user = authContext.user
+    isAuthenticated = authContext.isAuthenticated
+  } catch (error) {
+    // AuthProvider not available (SSR/prerender), use defaults
+    console.warn('AuthProvider not available, using default values')
+  }
   
   const [gardenData, setGardenData] = useState<GardenData | null>(null)
   const [plantTypes, setPlantTypes] = useState<PlantType[]>([])
@@ -312,14 +323,16 @@ export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
     return gardenData.garden.star_seeds >= cost
   }
 
-  // Initialize on mount and when user changes
+  // Initialize on mount and when user changes (only on client side)
   useEffect(() => {
-    initializeGarden()
+    if (typeof window !== 'undefined') {
+      initializeGarden()
+    }
   }, [user, isAuthenticated])
 
-  // Clear data when user logs out
+  // Clear data when user logs out (only on client side)
   useEffect(() => {
-    if (!isAuthenticated || !user) {
+    if (typeof window !== 'undefined' && (!isAuthenticated || !user)) {
       clearGardenData()
     }
   }, [isAuthenticated, user])
