@@ -54,8 +54,22 @@ interface GardenProviderProps {
 }
 
 export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
-  // Get auth context normally - handle SSR at the component level instead
-  const { user, isAuthenticated } = useAuth()
+  // Handle SSR by checking if we're on client side
+  const [isClient, setIsClient] = useState(false)
+  
+  // Always call useAuth (React hooks must be called unconditionally)
+  let auth = { user: null, isAuthenticated: false }
+  try {
+    auth = useAuth()
+  } catch (error) {
+    // AuthProvider not available during SSR
+  }
+  
+  const { user, isAuthenticated } = auth
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
   
   const [gardenData, setGardenData] = useState<GardenData | null>(null)
   const [plantTypes, setPlantTypes] = useState<PlantType[]>([])
@@ -313,17 +327,19 @@ export const GardenProvider: React.FC<GardenProviderProps> = ({ children }) => {
     return gardenData.garden.star_seeds >= cost
   }
 
-  // Initialize on mount and when user changes
+  // Initialize on mount and when user changes (only on client)
   useEffect(() => {
-    initializeGarden()
-  }, [user, isAuthenticated])
+    if (isClient) {
+      initializeGarden()
+    }
+  }, [isClient, user, isAuthenticated])
 
-  // Clear data when user logs out
+  // Clear data when user logs out (only on client)
   useEffect(() => {
-    if (!isAuthenticated || !user) {
+    if (isClient && (!isAuthenticated || !user)) {
       clearGardenData()
     }
-  }, [isAuthenticated, user])
+  }, [isClient, isAuthenticated, user])
 
   const value: GardenContextType = {
     // State
